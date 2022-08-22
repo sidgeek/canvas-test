@@ -11,9 +11,9 @@ export class Point2d {
       this.y += v.y
       return this;
   }
- random() {
-      this.x = Math.random() *1800;
-      this.y = Math.random() * 800;
-      return this
+  static random() {
+      const w = Math.random() * 800;
+      const h = Math.random() * 600;
+      return new Point2d(w, h)
   }
 }
