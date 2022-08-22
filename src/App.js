@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import './App.css';
-import { Canvas } from './core/canvas';
+import { Canvas, click } from './core/canvas';
 import { Circle } from './core/circle';
 import { Point2d } from './core/point2d';
 import { Polygon } from './core/polygon';
@@ -37,6 +37,14 @@ function App() {
     console.log('>>> sha', shape);
     // 添加到画布中
     canvas.add(shape)
+
+    circle.on(click, (event) => {
+      //event.isStopBubble = true
+      console.log(event, 'circle')
+    })
+    rect.on(click, (event) => {
+      console.log(event, 'rect')
+    })
   }, [])
 
 
