@@ -18,12 +18,15 @@ export class Canvas {
     this.allShapes.forEach((shape) => {
       // 获取当前事件的所有监听者
       const listerns = shape.listenerMap.get(name)
-      if (listerns) {
+      if (
+        listerns &&
+        shape.isPointInClosedRegion(event)
+      ) {
         listerns.forEach((listener) => listener(event))
       }
     })
   }
-
+  
   add(shape) {
     shape.draw(this.ctx)
     this.allShapes.push(shape)

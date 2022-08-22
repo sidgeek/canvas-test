@@ -20,6 +20,8 @@ export class Circle extends Shape {
 
   // 判断鼠标的点是否在图形内部
   isPointInClosedRegion(mouse) {
+    const { center, radius } = this.props
+    return mouse.point.distance(center) <= radius * radius
   }
 }
 
