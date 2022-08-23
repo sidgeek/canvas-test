@@ -27,7 +27,7 @@ function App() {
 
     const points = []
     for (let i = 0; i < 5; i++) {
-      points.push(Point2d.random())
+      points.push(Point2d.random(800, 600))
     }
     const shape = new Polygon({
       points,
