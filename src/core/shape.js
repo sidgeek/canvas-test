@@ -1,3 +1,5 @@
+import { Point2d } from "./point2d"
+
 // 图形的基类
 export class Shape {
   constructor() {
@@ -9,5 +11,19 @@ export class Shape {
     } else {
       this.listenerMap.set(eventName, [listener])
     }
+  }
+
+  off(eventName, listener) {
+    if (this.listenerMap.has(eventName)) {
+      const events = this.listenerMap.get(eventName)
+      const id = events.indexOf(listener)
+      if (id > -1) {
+        events.splice(id, 1)
+      }
+    }
+  }
+
+  getMouse(evet) {
+    return new Point2d(evet.offsetX, evet.offsetY)
   }
 }

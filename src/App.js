@@ -34,17 +34,27 @@ function App() {
       fillColor: 'orange',
     })
 
-    console.log('>>> sha', shape);
+    // console.log('>>> sha', shape);
     // 添加到画布中
     canvas.add(shape)
 
-    circle.on(click, (event) => {
-      //event.isStopBubble = true
+    const handleCircleClick = (event) => {
+      event.isStopBubble = true
       console.log(event, 'circle')
-    })
-    rect.on(click, (event) => {
+    }
+
+    const handleRectClick = (event) => {
+      event.isStopBubble = true
       console.log(event, 'rect')
-    })
+    }
+
+    circle.on(click, handleCircleClick)
+    rect.on(click, handleRectClick)
+
+    return () => {
+      circle.off(click, handleCircleClick)
+      rect.off(click, handleRectClick)
+    }
   }, [])
 
 
