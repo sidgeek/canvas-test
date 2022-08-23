@@ -48,12 +48,19 @@ function App() {
       console.log(event, 'rect')
     }
 
+    const handlePolygonClick = (event) => {
+      event.isStopBubble = true
+      console.log(event, 'polygon')
+    }
+
     circle.on(click, handleCircleClick)
     rect.on(click, handleRectClick)
+    shape.on(click, handlePolygonClick)
 
     return () => {
       circle.off(click, handleCircleClick)
       rect.off(click, handleRectClick)
+      shape.off(click, handlePolygonClick)
     }
   }, [])
 
