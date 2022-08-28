@@ -4,7 +4,7 @@ import { Shape } from "./shape"
 
 export class Polygon extends Shape {
   constructor(props) {
-    super()
+    super(props)
     this.props = props
   }
   draw(ctx) {

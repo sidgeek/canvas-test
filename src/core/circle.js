@@ -2,13 +2,12 @@ import { Shape } from "./shape"
 
 export class Circle extends Shape {
   constructor(props) {
-    super()
+    super(props)
     this.props = props
   }
 
   draw(ctx) {
-    const { center, radius, fillColor = 'black' } = this.props
-    const { x, y } = center
+    const { x, y, radius, fillColor = 'black' } = this.props
     ctx.save()
     ctx.beginPath()
     ctx.fillStyle = fillColor
@@ -20,8 +19,8 @@ export class Circle extends Shape {
 
   // 判断鼠标的点是否在图形内部
   isPointInClosedRegion(mouse) {
-    const { center, radius } = this.props
-    return mouse.point.distance(center) <= radius * radius
+    const { x, y, radius } = this.props
+    return mouse.point.distance({x, y}) <= radius * radius
   }
 }
 
