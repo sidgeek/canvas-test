@@ -6,15 +6,31 @@ class CanvasHandler extends BaseHandler {
 
     this.allShapes = []
     this.pointerPos = null
+    this.changedPointerPos = null
   }
 
-  setPointerPosition(evt) {
-    this.pointerPos = evt.point;
+  setPointerPosition(point) {
+    this.pointerPos = point;
+    this.changedPointerPos = point
   }
+
+  getPointerPosition() {
+    return this.changedPointerPos
+  }
+
+  clean(){}
 
   add(shape) {
+    shape.addRoot(this.root)
     shape.draw(this.ctx)
     this.allShapes.push(shape)
+  }
+
+  drawAll() {
+    this.clean()
+    this.allShapes.forEach(s => {
+      s.draw(this.ctx)
+    })
   }
 }
 

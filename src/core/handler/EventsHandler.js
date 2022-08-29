@@ -1,4 +1,5 @@
-import { click, move } from "../const";
+import { click, move, mouseup } from "../const";
+import { DD } from "../DragAndDrop";
 import { Point2d } from "../point2d";
 import BaseHandler from "./BaseHandler";
 
@@ -10,8 +11,9 @@ class EventsHandler extends BaseHandler {
 
   initialize() {
     const { canvas } = this.canvas
-    // canvas.addEventListener(move, this.handleEvent(move))
+    canvas.addEventListener(move, this.handleEvent(move))
     canvas.addEventListener(click, this.handleEvent(click))
+    canvas.addEventListener(mouseup, this.handleEvent(mouseup))
   }
 
   getNewEvent(event) {
@@ -45,6 +47,16 @@ class EventsHandler extends BaseHandler {
         break
       }
 
+      case mouseup: {
+        this.handleMouseUp(event)
+        break
+      }
+
+      case move: {
+        this.handleMouseMove(event)
+        break
+      }
+
       default: {
 
       }
@@ -53,9 +65,20 @@ class EventsHandler extends BaseHandler {
 
 
   handleMouseDown(event) {
-    console.log('>>> handleMouseDown', event);
+    this.root.canvasHandler.setPointerPosition(event.point)
   }
 
+  handleMouseUp(event) {
+    this.root.canvasHandler.setPointerPosition(null)
+  }
+
+  handleMouseMove(event) {
+    if (DD.isDragging) {
+      event.preventDefault();
+    }
+
+    this.root.canvasHandler.setPointerPosition(event.point)
+  }
 }
 
 export default EventsHandler

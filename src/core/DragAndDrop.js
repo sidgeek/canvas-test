@@ -39,9 +39,11 @@ export const DD = {
     const nodesToFireEvents = [];
     DD._dragElements.forEach((elem, key) => {
       const { node } = elem;
-      console.log('>>> node', node);
+      const { canvasHandler } = node.root
+
       // we need to find pointer relative to that node
       // const stage = node.getStage();
+      
       // stage.setPointersPositions(evt);
 
       // it is possible that user call startDrag without any event
@@ -53,26 +55,31 @@ export const DD = {
       //   (pos) => pos.id === elem.pointerId
       // );
 
+      const pos = canvasHandler.getPointerPosition()
+
       // not related pointer
-      // if (!pos) {
-      //   return;
-      // }
-      // if (elem.dragStatus !== 'dragging') {
-      //   var dragDistance = node.dragDistance();
-      //   var distance = Math.max(
-      //     Math.abs(pos.x - elem.startPointerPos.x),
-      //     Math.abs(pos.y - elem.startPointerPos.y)
-      //   );
-      //   if (distance < dragDistance) {
-      //     return;
-      //   }
-      //   node.startDrag({ evt });
-      //   // a user can stop dragging inside `dragstart`
-      //   if (!node.isDragging()) {
-      //     return;
-      //   }
-      // }
-      // node._setDragPosition(evt, elem);
+      if (!pos) {
+        return;
+      }
+
+      console.log('>>> ', elem.dragStatus);
+      if (elem.dragStatus !== 'dragging') {
+        // var dragDistance = node.dragDistance(); // 移动了多少才算移动
+        var dragDistance = 10; //
+        var distance = Math.max(
+          Math.abs(pos.x - elem.startPointerPos.x),
+          Math.abs(pos.y - elem.startPointerPos.y)
+        );
+        if (distance < dragDistance) {
+          return;
+        }
+        node.startDrag({ evt });
+        // a user can stop dragging inside `dragstart`
+        if (!node.isDragging()) {
+          return;
+        }
+      }
+      node._setDragPosition(evt, elem);
       // nodesToFireEvents.push(node);
     });
     // call dragmove only after ALL positions are changed
