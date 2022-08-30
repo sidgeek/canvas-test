@@ -18,7 +18,9 @@ class CanvasHandler extends BaseHandler {
     return this.changedPointerPos
   }
 
-  clean(){}
+  clean(){
+    this.canvas.clean()
+  }
 
   add(shape) {
     shape.addRoot(this.root)
