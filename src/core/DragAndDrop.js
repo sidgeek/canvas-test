@@ -62,7 +62,7 @@ export const DD = {
         return;
       }
 
-      console.log('>>> ', elem.dragStatus);
+      // console.log('>>> ', elem.dragStatus);
       if (elem.dragStatus !== 'dragging') {
         // var dragDistance = node.dragDistance(); // 移动了多少才算移动
         var dragDistance = 10; //

@@ -106,6 +106,7 @@ export class Shape {
       y: pos.y - elem.offset.y,
     };
 
+
     // var dbf = this.dragBoundFunc();
     // if (dbf !== undefined) {
     //   const bounded = dbf.call(this, newNodePos, evt);

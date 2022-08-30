@@ -3,10 +3,14 @@ import { Shape } from "./shape"
 export class Rect extends Shape {
   constructor(props) {
     super(props)
+    const { width, height, fillColor = 'black' } = props
     this.props = props
+    this.width = width
+    this.height = height
+    this.fillColor = fillColor
   }
   draw(ctx) {
-    const { x, y, width, height, fillColor = 'black' } = this.props
+    const { x, y, width, height, fillColor } = this
     ctx.save()
     ctx.beginPath()
     ctx.fillStyle = fillColor

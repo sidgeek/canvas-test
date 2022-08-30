@@ -4,10 +4,13 @@ export class Circle extends Shape {
   constructor(props) {
     super(props)
     this.props = props
+    const { radius, fillColor = 'black' } = props
+    this.radius = radius
+    this.fillColor = fillColor
   }
 
   draw(ctx) {
-    const { x, y, radius, fillColor = 'black' } = this.props
+    const { x, y, radius, fillColor } = this
     ctx.save()
     ctx.beginPath()
     ctx.fillStyle = fillColor

@@ -47,7 +47,6 @@ function App() {
       fillColor: 'orange',
     })
 
-    console.log('>>> sha', shape);
     // 添加到画布中
     // canvas.add(shape)
 
