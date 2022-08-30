@@ -39,7 +39,7 @@ export const DD = {
     const nodesToFireEvents = [];
     DD._dragElements.forEach((elem, key) => {
       const { node } = elem;
-      const { canvasHandler } = node.root
+      const { root } = node
 
       // we need to find pointer relative to that node
       // const stage = node.getStage();
@@ -55,7 +55,7 @@ export const DD = {
       //   (pos) => pos.id === elem.pointerId
       // );
 
-      const pos = canvasHandler.getPointerPosition()
+      const pos = root.getPointerPosition()
 
       // not related pointer
       if (!pos) {

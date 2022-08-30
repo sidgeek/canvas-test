@@ -96,7 +96,7 @@ export class Shape {
     // const pointers = this.getStage().getPointersPositions();
     // const pos = pointers.find(p => p.id === this._dragEventId);
     // const pos = this.getStage()._getPointerById(elem.pointerId);
-    const pos = this.root.canvasHandler.getPointerPosition()
+    const pos = this.root.getPointerPosition()
 
     if (!pos) {
       return;
@@ -125,7 +125,7 @@ export class Shape {
       this._lastPos.y !== newNodePos.y
     ) {
       this.setAbsolutePosition(newNodePos);
-      this.root.canvasHandler.drawAll()
+      this.root.drawAll()
     }
 
     this._lastPos = newNodePos;

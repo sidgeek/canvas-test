@@ -33,8 +33,8 @@ function App() {
       fillColor: 'black',
     })
     // 添加
-    handlers.canvasHandler.add(circle)
-    handlers.canvasHandler.add(rect)
+    handlers.add(circle)
+    handlers.add(rect)
 
     const points = []
     for (let i = 0; i < 5; i++) {

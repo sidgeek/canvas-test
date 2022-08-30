@@ -65,11 +65,11 @@ class EventsHandler extends BaseHandler {
 
 
   handleMouseDown(event) {
-    this.root.canvasHandler.setPointerPosition(event.point)
+    this.root.setPointerPosition(event.point)
   }
 
   handleMouseUp(event) {
-    this.root.canvasHandler.setPointerPosition(null)
+    this.root.setPointerPosition(null)
   }
 
   handleMouseMove(event) {
@@ -77,7 +77,7 @@ class EventsHandler extends BaseHandler {
       event.preventDefault();
     }
 
-    this.root.canvasHandler.setPointerPosition(event.point)
+    this.root.setPointerPosition(event.point)
   }
 }
 

@@ -3,36 +3,17 @@ import BaseHandler from "./BaseHandler";
 class CanvasHandler extends BaseHandler {
   constructor(props) {
     super(props)
-
-    this.allShapes = []
-    this.pointerPos = null
-    this.changedPointerPos = null
+    this.initialize()
   }
 
-  setPointerPosition(point) {
-    this.pointerPos = point;
-    this.changedPointerPos = point
-  }
+  initialize() {}
 
-  getPointerPosition() {
-    return this.changedPointerPos
-  }
-
-  clean(){
+  clean() {
     this.canvas.clean()
   }
 
-  add(shape) {
-    shape.addRoot(this.root)
-    shape.draw(this.ctx)
-    this.allShapes.push(shape)
-  }
-
-  drawAll() {
-    this.clean()
-    this.allShapes.forEach(s => {
-      s.draw(this.ctx)
-    })
+  getCtx() {
+    return this.canvas.ctx
   }
 }
 
