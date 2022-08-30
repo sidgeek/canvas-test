@@ -100,40 +100,33 @@ export const DD = {
   // setup all in dragbefore, and stop dragging only after pointerup triggered.
   _endDragBefore(evt) {
     // const drawNodes = [];
-    // DD._dragElements.forEach((elem) => {
-    //   const { node } = elem;
-    //   // we need to find pointer relative to that node
-    //   const stage = node.getStage();
-    //   if (evt) {
-    //     stage.setPointersPositions(evt);
-    //   }
+    DD._dragElements.forEach((elem) => {
+      const { node } = elem;
+      // we need to find pointer relative to that node
+      // const stage = node.getStage();
+      // if (evt) {
+      //   stage.setPointersPositions(evt);
+      // }
 
-    //   const pos = stage._changedPointerPositions.find(
-    //     (pos) => pos.id === elem.pointerId
-    //   );
+      // const pos = stage._changedPointerPositions.find(
+      //   (pos) => pos.id === elem.pointerId
+      // );
 
-    //   // that pointer is not related
-    //   if (!pos) {
-    //     return;
-    //   }
+      // that pointer is not related
+      // if (!pos) {
+      //   return;
+      // }
 
-    //   if (elem.dragStatus === 'dragging' || elem.dragStatus === 'stopped') {
-    //     // if a node is stopped manually we still need to reset events:
-    //     DD.justDragged = true;
-    //     Konva._mouseListenClick = false;
-    //     Konva._touchListenClick = false;
-    //     Konva._pointerListenClick = false;
-    //     elem.dragStatus = 'stopped';
-    //   }
+      if (elem.dragStatus === 'dragging' || elem.dragStatus === 'stopped') {
+        // if a node is stopped manually we still need to reset events:
+        DD.justDragged = true;
+        elem.dragStatus = 'stopped';
+      }
 
-    //   const drawNode =
-    //     elem.node.getLayer() ||
-    //     ((elem.node instanceof Konva['Stage'] && elem.node));
-
-    //   if (drawNode && drawNodes.indexOf(drawNode) === -1) {
-    //     drawNodes.push(drawNode);
-    //   }
-    // });
+      // if (drawNode && drawNodes.indexOf(drawNode) === -1) {
+      //   drawNodes.push(drawNode);
+      // }
+    });
     // // draw in a sync way
     // // because mousemove event may trigger BEFORE batch draw is called
     // // but as we have not hit canvas updated yet, it will trigger incorrect mouseover/mouseout events
@@ -142,27 +135,14 @@ export const DD = {
     // });
   },
   _endDragAfter(evt) {
-    // DD._dragElements.forEach((elem, key) => {
-    //   if (elem.dragStatus === 'stopped') {
-    //     elem.node.fire(
-    //       'dragend',
-    //       {
-    //         type: 'dragend',
-    //         target: elem.node,
-    //         evt: evt,
-    //       },
-    //       true
-    //     );
-    //   }
-    //   if (elem.dragStatus !== 'dragging') {
-    //     DD._dragElements.delete(key);
-    //   }
-    // });
+    DD._dragElements.forEach((elem, key) => {
+      if (elem.dragStatus !== 'dragging') {
+        DD._dragElements.delete(key);
+      }
+    });
   },
 };
 
-// if (Konva.isBrowser) {
-// }
 
 window.addEventListener('mouseup', DD._endDragBefore, true);
 window.addEventListener('touchend', DD._endDragBefore, true);
