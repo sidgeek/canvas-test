@@ -5,10 +5,13 @@ import { Shape } from "./shape"
 export class Polygon extends Shape {
   constructor(props) {
     super(props)
-    this.props = props
+    const { points, fillColor = 'black' } = props
+    this.points = points
+    this.fillColor = fillColor
   }
   draw(ctx) {
-    const { points, fillColor = 'black' } = this.props
+    const { fillColor, points } = this
+
     ctx.save()
     ctx.beginPath()
     ctx.fillStyle = fillColor
@@ -26,7 +29,7 @@ export class Polygon extends Shape {
   }
 
   getDispersed() {
-    return this.props.points
+    return this.points
   }
 
   isPointInClosedRegion(event) {

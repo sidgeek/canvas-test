@@ -4,7 +4,6 @@ export class Rect extends Shape {
   constructor(props) {
     super(props)
     const { width, height, fillColor = 'black' } = props
-    this.props = props
     this.width = width
     this.height = height
     this.fillColor = fillColor
@@ -21,11 +20,11 @@ export class Rect extends Shape {
 
   // 判断鼠标的点是否在图形内部
   isPointInClosedRegion(mouse) {
-    const { x, y } = mouse.point
-    const { x: minX, y: minY, width, height } = this.props
-    const maxX = minX + width
-    const maxY = minY + height
-    if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+    const { point } = mouse
+    const { x, y, width, height } = this
+    const maxX = x + width
+    const maxY = y + height
+    if (point.x >= x && x <= maxX && point.y >= y && y <= maxY) {
       return true
     }
     return false
