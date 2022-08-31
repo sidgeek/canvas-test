@@ -44,7 +44,7 @@ export class Shape {
     // drag & drop
   _createDragElement(evt) {
     console.log('create');
-    if (this._id > 3) return
+    if (this._id >= 3) return
     const pos = evt.point
     // shape 的起始位置
     const ap = this.getStartPoint()

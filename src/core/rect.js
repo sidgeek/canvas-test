@@ -24,7 +24,7 @@ export class Rect extends Shape {
     const { x, y, width, height } = this
     const maxX = x + width
     const maxY = y + height
-    if (point.x >= x && x <= maxX && point.y >= y && y <= maxY) {
+    if (point.x >= x && point.x <= maxX && point.y >= y && point.y <= maxY) {
       return true
     }
     return false

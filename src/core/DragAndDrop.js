@@ -139,9 +139,9 @@ export const DD = {
   _endDragAfter(evt) {
     DD._dragElements.forEach((elem, key) => {
       if (elem.dragStatus !== 'dragging') {
-        console.log('>>> delete before', DD._dragElements.size)
+        // console.log('>>> delete before', DD._dragElements.size)
         DD._dragElements.delete(key);
-        console.log('>>> delete after', DD._dragElements.size)
+        // console.log('>>> delete after', DD._dragElements.size)
       }
     });
   },
