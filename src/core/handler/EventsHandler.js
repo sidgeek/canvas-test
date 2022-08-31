@@ -10,7 +10,7 @@ class EventsHandler extends BaseHandler {
   }
 
   initialize() {
-    const { canvas } = this.canvas
+    const canvas  = this.root.canvasHandler.getCanvasEle()
     canvas.addEventListener(move, this.handleEvent(move))
     canvas.addEventListener(click, this.handleEvent(click))
     canvas.addEventListener(mouseup, this.handleEvent(mouseup))
@@ -29,13 +29,16 @@ class EventsHandler extends BaseHandler {
     this.root.getAllShapes().forEach((shape) => {
       // 获取当前事件的所有监听者
       const listerns = shape.listenerMap.get(name)
-      if (
-        listerns &&
-        shape.isPointInClosedRegion(event)
-        && !event.isStopBubble
-      ) {
-        shape._createDragElement(event)
-        listerns.forEach((listener) => listener(event))
+      const isIn = shape.isPointInClosedRegion(event)
+      && !event.isStopBubble
+
+      if (isIn) {
+        if (event.type === "mousedown") {
+          shape._createDragElement(event)
+        }
+        if (listerns) {
+          listerns.forEach((listener) => listener(event))
+        }
       }
     })
   }

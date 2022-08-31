@@ -6,10 +6,22 @@ class CanvasHandler extends BaseHandler {
     this.initialize()
   }
 
-  initialize() {}
+  initialize() {
+    const canvasEle = this.getCanvasEle()
+    canvasEle.width = this.canvas.width
+    canvasEle.height = this.canvas.height
+    canvasEle.style.border = '1px solid red'
+  }
+
 
   clean() {
-    this.canvas.clean()
+    const canvasEle = this.getCanvasEle()
+    canvasEle.width = this.canvas.width
+    canvasEle.height = this.canvas.height
+  }
+
+  getCanvasEle() {
+    return this.canvas._canvas
   }
 
   getCtx() {

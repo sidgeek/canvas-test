@@ -8,7 +8,6 @@ export class Shape {
     this._id = Shape.getId()
     this.x = x
     this.y = y
-    // console.log('>>> id:', this._id);
     this.listenerMap = new Map()
   }
 
@@ -44,6 +43,7 @@ export class Shape {
 
     // drag & drop
   _createDragElement(evt) {
+    console.log('create');
     if (this._id > 3) return
     const pos = evt.point
     // shape 的起始位置
@@ -68,15 +68,6 @@ export class Shape {
 
     const elem = DD._dragElements.get(this._id);
     elem.dragStatus = 'dragging';
-    // this.fire(
-    //   'dragstart',
-    //   {
-    //     type: 'dragstart',
-    //     target: this,
-    //     evt: evt && evt.evt,
-    //   },
-    //   bubbleEvent
-    // );
   }
 
   isDragging() {
@@ -93,9 +84,6 @@ export class Shape {
   }
 
   _setDragPosition(evt, elem) {
-    // const pointers = this.getStage().getPointersPositions();
-    // const pos = pointers.find(p => p.id === this._dragEventId);
-    // const pos = this.getStage()._getPointerById(elem.pointerId);
     const pos = this.root.getPointerPosition()
 
     if (!pos) {
@@ -105,19 +93,6 @@ export class Shape {
       x: pos.x - elem.offset.x,
       y: pos.y - elem.offset.y,
     };
-
-
-    // var dbf = this.dragBoundFunc();
-    // if (dbf !== undefined) {
-    //   const bounded = dbf.call(this, newNodePos, evt);
-    //   if (!bounded) {
-    //     Util.warn(
-    //       'dragBoundFunc did not return any value. That is unexpected behavior. You must return new absolute position from dragBoundFunc.'
-    //     );
-    //   } else {
-    //     newNodePos = bounded;
-    //   }
-    // }
 
     if (
       !this._lastPos ||
@@ -132,8 +107,8 @@ export class Shape {
   }
 
 
-  getMouse(evet) {
-    return new Point2d(evet.offsetX, evet.offsetY)
+  getMouse(evt) {
+    return new Point2d(evt.offsetX, evt.offsetY)
   }
 
   addRoot(root) {

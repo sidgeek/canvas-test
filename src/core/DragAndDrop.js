@@ -41,6 +41,8 @@ export const DD = {
       const { node } = elem;
       const { root } = node
 
+      // console.log('>>> node', node);
+
       // we need to find pointer relative to that node
       // const stage = node.getStage();
       
@@ -137,7 +139,9 @@ export const DD = {
   _endDragAfter(evt) {
     DD._dragElements.forEach((elem, key) => {
       if (elem.dragStatus !== 'dragging') {
+        console.log('>>> delete before', DD._dragElements.size)
         DD._dragElements.delete(key);
+        console.log('>>> delete after', DD._dragElements.size)
       }
     });
   },
