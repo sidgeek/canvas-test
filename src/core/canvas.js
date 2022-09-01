@@ -11,10 +11,19 @@ export class Canvas {
     this.viewportTransform = iMatrix.concat()
   }
 
+
+  getWidth() {
+    return this.width / 2
+  }
+
+  getHeight() {
+    return this.height / 2
+  }
+
   getCenter() {
     return {
-      top: this.height / 2,
-      left: this.width / 2
+      x: this.height / 2,
+      y: this.width / 2
     };
   }
 
@@ -38,12 +47,20 @@ export class Canvas {
     return this.viewportTransform;
   }
 
-  setViewportTransform(vpt) {
+  setViewportTransform(v) {
     // var activeObject = this._activeObject,
     //     backgroundObject = this.backgroundImage,
     //     overlayObject = this.overlayImage,
     //     object, i, len;
-    this.viewportTransform = vpt;
+    this.viewportTransform = v;
+
+    // ctx.save();
+    this.ctx.transform(v[0], v[1], v[2], v[3], v[4], v[5]);
+
+    // console.log('>>> tr before', this.ctx.getTransform());
+    // this.ctx.scale(0.2, 0.2)
+    // console.log('>>> tr after', this.ctx.getTransform());
+
     // for (i = 0, len = this._objects.length; i < len; i++) {
     //   object = this._objects[i];
     //   object.group || object.setCoords(true);
@@ -59,7 +76,7 @@ export class Canvas {
     // }
     // this.calcViewportBoundaries();
     // this.renderOnAddRemove && this.requestRenderAll();
-    // return this;
+    return this;
   }
 
 

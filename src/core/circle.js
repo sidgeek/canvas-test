@@ -11,6 +11,7 @@ export class Circle extends Shape {
   draw(ctx) {
     const { x, y, radius, fillColor } = this
     ctx.save()
+    this.root.updateCtxTransform(ctx)  
     ctx.beginPath()
     ctx.fillStyle = fillColor
     ctx.arc(x, y, radius, 0, Math.PI * 2)

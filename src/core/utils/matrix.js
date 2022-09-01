@@ -14,7 +14,7 @@ import { Point } from "../point";
  * @param  {Boolean} [ignoreOffset] Indicates that the offset should not be applied
  * @return {Point} The transformed point
  */
-export const transformPoint = (p, ignoreOffset) => new Point(p).transform(t, ignoreOffset);
+export const transformPoint = (p, t, ignoreOffset) => new Point(p.x, p.y).transform(t, ignoreOffset);
 
 /**
  * Invert transformation t

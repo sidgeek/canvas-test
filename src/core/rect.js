@@ -11,6 +11,7 @@ export class Rect extends Shape {
   draw(ctx) {
     const { x, y, width, height, fillColor } = this
     ctx.save()
+    this.root.updateCtxTransform(ctx)   
     ctx.beginPath()
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, width, height)

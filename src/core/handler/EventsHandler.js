@@ -1,5 +1,6 @@
 import { click, move, mouseup, mousewheel } from "../const";
 import { DD } from "../DragAndDrop";
+import { Point } from "../point";
 import { Point2d } from "../point2d";
 import BaseHandler from "./BaseHandler";
 
@@ -85,8 +86,21 @@ class EventsHandler extends BaseHandler {
     this.root.setPointerPosition(event.point)
   }
 
-  handleWheel(evt) {
-    console.log('>>> evt', evt);
+  handleWheel = (evt) => {
+    const delta = evt.deltaY
+    let zoomRatio = this.canvas.getZoom()
+    if (delta > 0) {
+      zoomRatio -= 0.02
+    } else {
+      zoomRatio += 0.02
+    }
+    this.root.zoomHandler.zoomToPoint(
+      new Point(this.canvas.getWidth() / 2, this.canvas.getHeight() / 2),
+      zoomRatio
+    )
+    this.root.drawAll()
+    evt.preventDefault()
+    evt.stopPropagation()
   }
 }
 
