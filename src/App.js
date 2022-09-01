@@ -13,6 +13,7 @@ function App() {
   const context = useContext(EditorContext)
 
   useEffect(() => {
+    debugger
     const canvas = new Canvas()
     const handlers = new Handlers({ canvas })
 
