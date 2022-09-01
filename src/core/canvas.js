@@ -1,4 +1,5 @@
 import { iMatrix } from "./const"
+import { invertTransform, transformPoint } from "./utils/matrix"
 
 export class Canvas {
   constructor() {

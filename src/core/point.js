@@ -9,18 +9,23 @@ export class Point {
 
   type = 'point'
 
-  constructor()
-  constructor(x, y)
-  constructor(point)
-  constructor(arg0 = 0, y = 0) {
-    if (typeof arg0 === 'object') {
-      this.x = arg0.x;
-      this.y = arg0.y;
-    }
-    else {
-      this.x = arg0;
-      this.y = y;
-    }
+  // constructor()
+  // constructor(x, y)
+  // constructor(point)
+  // constructor(arg0 = 0, y = 0) {
+  //   if (typeof arg0 === 'object') {
+  //     this.x = arg0.x;
+  //     this.y = arg0.y;
+  //   }
+  //   else {
+  //     this.x = arg0;
+  //     this.y = y;
+  //   }
+  // }
+
+  constructor(x, y){
+    this.x = x
+    this.y = y
   }
 
   /**
