@@ -87,6 +87,32 @@ class EventsHandler extends BaseHandler {
   }
 
   handleWheel = (evt) => {
+    const isCtrlKey = evt.ctrlKey
+    if (isCtrlKey) {
+      this.handleZoom(evt)
+    } else {
+      this.handlePan(evt)
+    }
+  }
+
+
+  handlePan = event => {
+    const delta = event.deltaY
+    const deltaX = event.deltaX
+    const isShiftKey = event.shiftKey
+    let pointX = 0
+    let pointY = delta > 0 ? -30 : 30
+
+    if (isShiftKey) {
+      pointY = 0
+      pointX = deltaX > 0 ? -30 : 30
+    }
+    const point = new Point(pointX, pointY)
+    this.canvas.relativePan(point)
+    this.root.drawAll()
+  }
+
+  handleZoom = evt => {
     const delta = evt.deltaY
     let zoomRatio = this.canvas.getZoom()
     if (delta > 0) {

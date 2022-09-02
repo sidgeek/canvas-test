@@ -1,4 +1,5 @@
 import { iMatrix } from "./const"
+import { Point } from "./point"
 import { invertTransform, transformPoint } from "./utils/matrix"
 
 export class Canvas {
@@ -79,6 +80,26 @@ export class Canvas {
     return this;
   }
 
+
+  absolutePan (point) {
+    var vpt = this.viewportTransform.slice(0);
+    vpt[4] = -point.x;
+    vpt[5] = -point.y;
+    return this.setViewportTransform(vpt);
+  }
+
+  /**
+   * Pans viewpoint relatively
+   * @param {Point} point (position vector) to move by
+   * @return {Canvas} instance
+   * @chainable true
+   */
+  relativePan (point) {
+    return this.absolutePan(new Point(
+      -point.x - this.viewportTransform[4],
+      -point.y - this.viewportTransform[5]
+    ));
+  }
 
   updateSize(w, h) {
     this.width = w
