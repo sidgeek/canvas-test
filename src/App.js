@@ -4,7 +4,7 @@ import { Canvas } from './core/canvas';
 import { click } from './core/const';
 import { Circle } from './core/circle';
 import { Point2d } from './core/point2d';
-import { Polygon } from './core/polygon';
+// import { Polygon } from './core/polygon';
 import { Rect } from './core/rect';
 import Handlers from './core/handler'
 import { EditorContext } from "./core/context"
@@ -40,12 +40,12 @@ function App() {
     for (let i = 0; i < 5; i++) {
       points.push(Point2d.random(800, 600))
     }
-    const shape = new Polygon({
-      x: points[0].x,
-      y: points[0].y,
-      points,
-      fillColor: 'orange',
-    })
+    // const shape = new Polygon({
+    //   x: points[0].x,
+    //   y: points[0].y,
+    //   points,
+    //   fillColor: 'orange',
+    // })
 
     // 添加到画布中
     // canvas.add(shape)
@@ -60,10 +60,10 @@ function App() {
       // console.log(event, 'rect')
     }
 
-    const handlePolygonClick = (event) => {
-      event.isStopBubble = true
-      // console.log(event, 'polygon')
-    }
+    // const handlePolygonClick = (event) => {
+    //   event.isStopBubble = true
+    //   // console.log(event, 'polygon')
+    // }
 
     circle.on(click, handleCircleClick)
     rect.on(click, handleRectClick)
@@ -74,6 +74,7 @@ function App() {
       rect.off(click, handleRectClick)
       // shape.off(click, handlePolygonClick)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 
