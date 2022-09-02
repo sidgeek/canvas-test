@@ -120,10 +120,9 @@ class EventsHandler extends BaseHandler {
     } else {
       zoomRatio += 0.02
     }
-    this.root.zoomHandler.zoomToPoint(
-      new Point(this.canvas.getWidth() / 2, this.canvas.getHeight() / 2),
-      zoomRatio
-    )
+    // const cp = this.canvas.getCenterPoint()
+    const mouse = { x: evt.offsetX, y: evt.offsetY}
+    this.root.zoomHandler.zoomToPoint(mouse, zoomRatio)
     this.root.drawAll()
     evt.preventDefault()
     evt.stopPropagation()

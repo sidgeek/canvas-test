@@ -28,6 +28,10 @@ export class Canvas {
     };
   }
 
+  getCenterPoint() {
+    return new Point(this.height / 2, this.width / 2)
+  }
+
   zoomToPoint(point, value) {
     // TODO: just change the scale, preserve other transformations
     var before = point, vpt = this.viewportTransform.slice(0);

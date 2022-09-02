@@ -57,7 +57,6 @@ class ZoomHandler extends BaseHandler {
     } else if (zoom >= maxZoom / 100) {
       zoomRatio = maxZoom / 100
     }
-    console.log('>>> point', point, zoomRatio);
     this.canvas.zoomToPoint(point, zoomRatio)
     // this.context.setZoomRatio(zoomRatio)
   }
