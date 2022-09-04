@@ -1,4 +1,5 @@
 import { Point } from "../point";
+import { invertTransform, transformPoint } from "../utils/matrix";
 import BaseHandler from "./BaseHandler";
 
 class ZoomHandler extends BaseHandler {
@@ -57,8 +58,16 @@ class ZoomHandler extends BaseHandler {
     } else if (zoom >= maxZoom / 100) {
       zoomRatio = maxZoom / 100
     }
-    this.canvas.zoomToPoint(point, zoomRatio)
-    // this.context.setZoomRatio(zoomRatio)
+    // this.canvas.zoomToPoint(point, zoomRatio)
+
+    var before = point, vpt = this.canvas.viewportTransform.slice(0);
+    point = transformPoint(point, invertTransform(this.canvas.viewportTransform));
+    vpt[0] = zoomRatio;
+    vpt[3] = zoomRatio;
+    var after = transformPoint(point, vpt);
+    vpt[4] += before.x - after.x;
+    vpt[5] += before.y - after.y;
+    this.canvas.setViewportTransform(vpt);
   }
 }
 
