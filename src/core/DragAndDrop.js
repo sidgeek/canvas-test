@@ -64,7 +64,7 @@ export const DD = {
         return;
       }
 
-      // console.log('>>> ', elem.dragStatus);
+   
       if (elem.dragStatus !== 'dragging') {
         // var dragDistance = node.dragDistance(); // 移动了多少才算移动
         var dragDistance = 10; //
@@ -72,6 +72,8 @@ export const DD = {
           Math.abs(pos.x - elem.startPointerPos.x),
           Math.abs(pos.y - elem.startPointerPos.y)
         );
+        // console.log('>>> distance:', pos.x, elem.startPointerPos.x);
+        console.log('>>> distance:', distance);
         if (distance < dragDistance) {
           return;
         }

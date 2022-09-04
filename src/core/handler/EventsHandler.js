@@ -1,5 +1,5 @@
 import { click, move, mouseup, mousewheel } from "../const";
-// import { DD } from "../DragAndDrop";
+import { DD } from "../DragAndDrop";
 // import { Point } from "../point";
 import { Point2d } from "../point2d";
 import { getTransformedPoint } from "../utils/transform";
@@ -36,21 +36,24 @@ class EventsHandler extends BaseHandler {
   handleEvent = (name) => (event) => {
     event = this.getNewEvent(event)
     this.preHandleEvent(name, event)
-    // this.root.getAllShapes().forEach((shape) => {
-    //   // 获取当前事件的所有监听者
-    //   const listerns = shape.listenerMap.get(name)
-    //   const isIn = shape.isPointInClosedRegion(event)
-    //   && !event.isStopBubble
+    const ctx = this.canvas.getCtx()
+    this.root.getAllShapes().forEach((shape) => {
+      // 获取当前事件的所有监听者
+      const listerns = shape.listenerMap.get(name)
+      const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y);
+      debugger
+      const isIn = shape.isPointInClosedRegion(canvasPos)
+      && !event.isStopBubble
 
-    //   if (isIn) {
-    //     if (event.type === "mousedown") {
-    //       shape._createDragElement(event)
-    //     }
-    //     if (listerns) {
-    //       listerns.forEach((listener) => listener(event))
-    //     }
-    //   }
-    // })
+      if (isIn) {
+        if (event.type === "mousedown") {
+          shape._createDragElement(event)
+        }
+        if (listerns) {
+          listerns.forEach((listener) => listener(event))
+        }
+      }
+    })
   }
 
   preHandleEvent = (name, event) => {
@@ -81,33 +84,31 @@ class EventsHandler extends BaseHandler {
     isDragging = true;
     const ctx = this.canvas.getCtx()
     dragStartPosition = getTransformedPoint(ctx, event.offsetX, event.offsetY);
-    // this.root.setPointerPosition(event.point)
+    this.root.setPointerPosition(event.point)
+    // this.root.setPointerPosition(dragStartPosition)
   }
 
   handleMouseUp(event) {
     isDragging = false
-    // this.root.setPointerPosition(null)
+    this.root.setPointerPosition(null)
   }
 
   handleMouseMove(event) {
+    this.root.setPointerPosition(event.point)
     const ctx = this.canvas.getCtx()
-    // const aa = ctx.getTransform()
     currentTransformedCursor = getTransformedPoint(ctx, event.offsetX, event.offsetY);
     mousePos.innerText = `Original X: ${event.offsetX}, Y: ${event.offsetY}`;
     transformedMousePos.innerText = `Transformed X: ${currentTransformedCursor.x}, Y: ${currentTransformedCursor.y}`;
 
-    // if (DD.isDragging) {
-    //   event.preventDefault();
-    // }
-
-    if (isDragging) {
-      const mvX= currentTransformedCursor.x - dragStartPosition.x
-      const mvY= currentTransformedCursor.y - dragStartPosition.y
-      ctx.translate(mvX, mvY);
+    if (DD.isDragging) {
+      event.preventDefault();
+    } else if (isDragging){
+      // const mvX= currentTransformedCursor.x - dragStartPosition.x
+      // const mvY= currentTransformedCursor.y - dragStartPosition.y
+      // ctx.translate(mvX, mvY);
     }
 
     this.root.drawAll()
-    // this.root.setPointerPosition(event.point)
   }
 
   handleWheel = (evt) => {
@@ -134,8 +135,6 @@ class EventsHandler extends BaseHandler {
 
     const context = this.canvas.getCtx()
     context.translate(pointX, pointY);
-    // const point = new Point(pointX, pointY)
-    // this.canvas.relativePan(point)
     this.root.drawAll()
   }
 

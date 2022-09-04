@@ -19,8 +19,7 @@ export class Rect extends Shape {
   }
 
   // 判断鼠标的点是否在图形内部
-  isPointInClosedRegion(mouse) {
-    const { point } = mouse
+  isPointInClosedRegion(point) {
     const { x, y, width, height } = this
     const maxX = x + width
     const maxY = y + height

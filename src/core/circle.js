@@ -22,9 +22,10 @@ export class Circle extends Shape {
   }
 
   // 判断鼠标的点是否在图形内部
-  isPointInClosedRegion(mouse) {
+  isPointInClosedRegion(point) {
+    debugger
     const { x, y, radius } = this
-    return mouse.point.distance({x, y}) <= radius * radius
+    return point.distance({x, y}) <= radius * radius
   }
 }
 

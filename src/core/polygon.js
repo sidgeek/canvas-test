@@ -32,10 +32,10 @@ export class Polygon extends Shape {
     return this.points
   }
 
-  isPointInClosedRegion(event) {
+  isPointInClosedRegion(point) {
     const allSegs = Seg2d.getSegments(this.getDispersed(), true)
     // 选取任意一条射线
-    const start = event.point
+    const start = point
     const xAxias = new Point2d(1, 0).multiplyScalar(800)
     const end = start.clone().add(xAxias)
     const anyRaySeg = new Seg2d(start, end)
