@@ -1,6 +1,6 @@
 import { Point2d } from "./point2d"
 import { DD } from "./DragAndDrop"
-import { getTransformedDistance } from "./utils/transform"
+import { getTransformedDistance, getTransformedPoint } from "./utils/transform"
 
 // 图形的基类
 export class Shape {
@@ -43,18 +43,18 @@ export class Shape {
   }
 
     // drag & drop
-  _createDragElement(evt) {
+  _createDragElement(canvasPos) {
     if (this._id >= 3) return
-    const pos = evt.point
+    // const pos = evt.point
     // shape 的起始位置
     const ap = this.getStartPoint()
 
     DD._dragElements.set(this._id, {
       node: this,
-      startPointerPos: pos,
+      startPointerPos: canvasPos,
       offset: {
-        x: pos.x - ap.x,
-        y: pos.y - ap.y,
+        x: canvasPos.x - ap.x,
+        y: canvasPos.y - ap.y,
       },
       dragStatus: 'ready',
       pointerId: this._id,
@@ -90,9 +90,12 @@ export class Shape {
     if (!pos) {
       return;
     }
-    const moveX = pos.x - elem.offset.x
-    const moveY = pos.y - elem.offset.y
-    var newNodePos = getTransformedDistance(ctx, {x: moveX, y: moveY})
+
+    const canvasPos = getTransformedPoint(ctx, pos.x, pos.y)
+
+    const moveX = canvasPos.x - elem.offset.x
+    const moveY = canvasPos.y - elem.offset.y
+    var newNodePos = {x: moveX, y: moveY}
 
     console.log('>>> newNodePos', newNodePos);
     if (

@@ -46,7 +46,7 @@ class EventsHandler extends BaseHandler {
 
       if (isIn) {
         if (event.type === "mousedown") {
-          shape._createDragElement(event)
+          shape._createDragElement(canvasPos)
         }
         if (listerns) {
           listerns.forEach((listener) => listener(event))
