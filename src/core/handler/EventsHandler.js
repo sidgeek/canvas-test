@@ -1,8 +1,15 @@
 import { click, move, mouseup, mousewheel } from "../const";
-import { DD } from "../DragAndDrop";
-import { Point } from "../point";
+// import { DD } from "../DragAndDrop";
+// import { Point } from "../point";
 import { Point2d } from "../point2d";
+import { getTransformedPoint } from "../utils/transform";
 import BaseHandler from "./BaseHandler";
+
+let currentTransformedCursor
+let dragStartPosition = { x: 0, y: 0 };
+let isDragging = false
+const mousePos = document.getElementById('mouse-pos');
+const transformedMousePos = document.getElementById('transformed-mouse-pos');
 
 class EventsHandler extends BaseHandler {
   constructor(props) {
@@ -29,21 +36,21 @@ class EventsHandler extends BaseHandler {
   handleEvent = (name) => (event) => {
     event = this.getNewEvent(event)
     this.preHandleEvent(name, event)
-    this.root.getAllShapes().forEach((shape) => {
-      // 获取当前事件的所有监听者
-      const listerns = shape.listenerMap.get(name)
-      const isIn = shape.isPointInClosedRegion(event)
-      && !event.isStopBubble
+    // this.root.getAllShapes().forEach((shape) => {
+    //   // 获取当前事件的所有监听者
+    //   const listerns = shape.listenerMap.get(name)
+    //   const isIn = shape.isPointInClosedRegion(event)
+    //   && !event.isStopBubble
 
-      if (isIn) {
-        if (event.type === "mousedown") {
-          shape._createDragElement(event)
-        }
-        if (listerns) {
-          listerns.forEach((listener) => listener(event))
-        }
-      }
-    })
+    //   if (isIn) {
+    //     if (event.type === "mousedown") {
+    //       shape._createDragElement(event)
+    //     }
+    //     if (listerns) {
+    //       listerns.forEach((listener) => listener(event))
+    //     }
+    //   }
+    // })
   }
 
   preHandleEvent = (name, event) => {
@@ -71,27 +78,46 @@ class EventsHandler extends BaseHandler {
 
 
   handleMouseDown(event) {
-    this.root.setPointerPosition(event.point)
+    isDragging = true;
+    const ctx = this.canvas.getCtx()
+    dragStartPosition = getTransformedPoint(ctx, event.offsetX, event.offsetY);
+    // this.root.setPointerPosition(event.point)
   }
 
   handleMouseUp(event) {
-    this.root.setPointerPosition(null)
+    isDragging = false
+    // this.root.setPointerPosition(null)
   }
 
   handleMouseMove(event) {
-    if (DD.isDragging) {
-      event.preventDefault();
-    }
+    const ctx = this.canvas.getCtx()
+    // const aa = ctx.getTransform()
+    currentTransformedCursor = getTransformedPoint(ctx, event.offsetX, event.offsetY);
+    mousePos.innerText = `Original X: ${event.offsetX}, Y: ${event.offsetY}`;
+    transformedMousePos.innerText = `Transformed X: ${currentTransformedCursor.x}, Y: ${currentTransformedCursor.y}`;
 
-    this.root.setPointerPosition(event.point)
+    // if (DD.isDragging) {
+    //   event.preventDefault();
+    // }
+
+    if (isDragging) {
+      const mvX= currentTransformedCursor.x - dragStartPosition.x
+      const mvY= currentTransformedCursor.y - dragStartPosition.y
+      ctx.translate(mvX, mvY);
+    }
+    const tr = ctx.getTransform()
+    console.log('>>> tr', tr.e, tr.f);
+
+    this.root.drawAll()
+    // this.root.setPointerPosition(event.point)
   }
 
   handleWheel = (evt) => {
     const isCtrlKey = evt.ctrlKey
     if (isCtrlKey) {
-      this.handleZoom(evt)
+      // this.handleZoom(evt)
     } else {
-      this.handlePan(evt)
+      // this.handlePan(evt)
     }
   }
 
@@ -107,22 +133,19 @@ class EventsHandler extends BaseHandler {
       pointY = 0
       pointX = deltaX > 0 ? -30 : 30
     }
-    const point = new Point(pointX, pointY)
-    this.canvas.relativePan(point)
+    // const point = new Point(pointX, pointY)
+    // this.canvas.relativePan(point)
     this.root.drawAll()
   }
 
   handleZoom = evt => {
-    const delta = evt.deltaY
-    let zoomRatio = this.canvas.getZoom()
-    if (delta > 0) {
-      zoomRatio -= 0.02
-    } else {
-      zoomRatio += 0.02
-    }
-    // const cp = this.canvas.getCenterPoint()
-    const mouse = { x: evt.offsetX, y: evt.offsetY}
-    this.root.zoomHandler.zoomToPoint(mouse, zoomRatio)
+    const zoom = evt.deltaY < 0 ? 1.1 : 0.9;
+    const context = this.canvas.getCtx()
+
+    context.translate(currentTransformedCursor.x, currentTransformedCursor.y);
+    context.scale(zoom, zoom);
+    context.translate(-currentTransformedCursor.x, -currentTransformedCursor.y);
+    
     this.root.drawAll()
     evt.preventDefault()
     evt.stopPropagation()

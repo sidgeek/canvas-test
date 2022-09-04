@@ -9,15 +9,16 @@ export class Circle extends Shape {
   }
 
   draw(ctx) {
+    // const tr = ctx.getTransform()
+    // console.log('>>> tr', tr);
     const { x, y, radius, fillColor } = this
-    ctx.save()
-    this.root.updateCtxTransform(ctx)  
+    // ctx.save()
     ctx.beginPath()
     ctx.fillStyle = fillColor
     ctx.arc(x, y, radius, 0, Math.PI * 2)
     ctx.fill()
     ctx.closePath()
-    ctx.restore()
+    // ctx.restore()
   }
 
   // 判断鼠标的点是否在图形内部

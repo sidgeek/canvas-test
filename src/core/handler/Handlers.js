@@ -44,11 +44,6 @@ class Handlers {
     })
   }
 
-  updateCtxTransform(ctx){
-    const v = this.canvasHandler.canvas.getViewportTransform()
-    ctx.transform(v[0], v[1], v[2], v[3], v[4], v[5])
-  }
-  
 
   getAllShapes() {
     return this.allShapes

@@ -15,9 +15,11 @@ class CanvasHandler extends BaseHandler {
 
 
   clean() {
-    const canvasEle = this.getCanvasEle()
-    canvasEle.width = this.canvas.width
-    canvasEle.height = this.canvas.height
+    const context = this.getCtx()
+    context.save();
+    context.setTransform(1,0,0,1,0,0);
+    context.clearRect(0,0, this.canvas.width, this.canvas.height);
+    context.restore();
   }
 
   getCanvasEle() {
