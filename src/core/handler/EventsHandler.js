@@ -105,8 +105,6 @@ class EventsHandler extends BaseHandler {
       const mvY= currentTransformedCursor.y - dragStartPosition.y
       ctx.translate(mvX, mvY);
     }
-    const tr = ctx.getTransform()
-    console.log('>>> tr', tr.e, tr.f);
 
     this.root.drawAll()
     // this.root.setPointerPosition(event.point)
@@ -115,9 +113,9 @@ class EventsHandler extends BaseHandler {
   handleWheel = (evt) => {
     const isCtrlKey = evt.ctrlKey
     if (isCtrlKey) {
-      // this.handleZoom(evt)
+      this.handleZoom(evt)
     } else {
-      // this.handlePan(evt)
+      this.handlePan(evt)
     }
   }
 
@@ -133,6 +131,9 @@ class EventsHandler extends BaseHandler {
       pointY = 0
       pointX = deltaX > 0 ? -30 : 30
     }
+
+    const context = this.canvas.getCtx()
+    context.translate(pointX, pointY);
     // const point = new Point(pointX, pointY)
     // this.canvas.relativePan(point)
     this.root.drawAll()
