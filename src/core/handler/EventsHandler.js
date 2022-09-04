@@ -41,7 +41,6 @@ class EventsHandler extends BaseHandler {
       // 获取当前事件的所有监听者
       const listerns = shape.listenerMap.get(name)
       const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y);
-      debugger
       const isIn = shape.isPointInClosedRegion(canvasPos)
       && !event.isStopBubble
 

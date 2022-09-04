@@ -1,5 +1,6 @@
 import { Point2d } from "./point2d"
 import { DD } from "./DragAndDrop"
+import { getTransformedDistance } from "./utils/transform"
 
 // 图形的基类
 export class Shape {
@@ -84,15 +85,16 @@ export class Shape {
 
   _setDragPosition(evt, elem) {
     const pos = this.root.getPointerPosition()
+    const ctx = this.root.canvasHandler.getCtx()
 
     if (!pos) {
       return;
     }
-    var newNodePos = {
-      x: pos.x - elem.offset.x,
-      y: pos.y - elem.offset.y,
-    };
+    const moveX = pos.x - elem.offset.x
+    const moveY = pos.y - elem.offset.y
+    var newNodePos = getTransformedDistance(ctx, {x: moveX, y: moveY})
 
+    console.log('>>> newNodePos', newNodePos);
     if (
       !this._lastPos ||
       this._lastPos.x !== newNodePos.x ||
