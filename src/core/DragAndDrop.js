@@ -1,7 +1,3 @@
-// import { Konva } from './Global';
-// import { Util } from './Util';
-// import { Shape } from './shape';
-
 export const DD = {
   get isDragging() {
     var flag = false;
