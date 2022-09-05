@@ -44,7 +44,6 @@ export class Shape {
 
     // drag & drop
   _createDragElement(canvasPos) {
-    if (this._id >= 3) return
     // const pos = evt.point
     // shape 的起始位置
     const ap = this.getStartPoint()
@@ -77,6 +76,7 @@ export class Shape {
 
 
   setAbsolutePosition(pos) {
+    console.log('>>> set', pos.x, pos.y);
     this.x = pos.x
     this.y = pos.y
 
@@ -97,7 +97,6 @@ export class Shape {
     const moveY = canvasPos.y - elem.offset.y
     var newNodePos = {x: moveX, y: moveY}
 
-    console.log('>>> newNodePos', newNodePos);
     if (
       !this._lastPos ||
       this._lastPos.x !== newNodePos.x ||

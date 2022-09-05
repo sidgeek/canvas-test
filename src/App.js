@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
 import { click } from './core/const';
@@ -19,23 +19,6 @@ function App() {
     context.setHandlers(handlers)
     context.setCanvas(canvas)
 
-    const circle = new Circle({
-      x: 150,
-      y: 150,
-      radius: 50,
-      fillColor: 'green',
-    })
-    const rect = new Rect({
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-      fillColor: 'black',
-    })
-    // 添加
-    handlers.add(circle)
-    handlers.add(rect)
-
     // const points = []
     // for (let i = 0; i < 5; i++) {
     //   points.push(Point2d.random(800, 600))
@@ -50,37 +33,64 @@ function App() {
     // 添加到画布中
     // canvas.add(shape)
 
-    const handleCircleClick = (event) => {
-      event.isStopBubble = true
-      // console.log(event, 'circle')
-    }
+    // const handleCircleClick = (event) => {
+    //   event.isStopBubble = true
+    //   // console.log(event, 'circle')
+    // }
 
-    const handleRectClick = (event) => {
-      event.isStopBubble = true
-      // console.log(event, 'rect')
-    }
+    // const handleRectClick = (event) => {
+    //   event.isStopBubble = true
+    //   // console.log(event, 'rect')
+    // }
 
     // const handlePolygonClick = (event) => {
     //   event.isStopBubble = true
     //   // console.log(event, 'polygon')
     // }
 
-    circle.on(click, handleCircleClick)
-    rect.on(click, handleRectClick)
+    // circle.on(click, handleCircleClick)
+    // rect.on(click, handleRectClick)
     // shape.on(click, handlePolygonClick)
 
     return () => {
-      circle.off(click, handleCircleClick)
-      rect.off(click, handleRectClick)
+      // circle.off(click, handleCircleClick)
+      // rect.off(click, handleRectClick)
       // shape.off(click, handlePolygonClick)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const addCircle = useCallback(() => {
+    const circle = new Circle({
+      x: 150,
+      y: 150,
+      radius: 50,
+      fillColor: 'green',
+    })
+
+    // 添加
+    context && context.handlers.add(circle)
+  }, [context])
+
+
+  const addRect = useCallback(() => {
+    const rect = new Rect({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      fillColor: 'black',
+    })
+    context && context.handlers.add(rect)
+  }, [context])
 
   return (
     <div className="App">
       <canvas id='canvas' />
+      <div>
+        <button onClick={addRect}>add Rect </button>
+        <button onClick={addCircle}>add Circle </button>
+      </div>
     </div>
   );
 }
