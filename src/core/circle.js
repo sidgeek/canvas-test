@@ -8,7 +8,8 @@ export class Circle extends Shape {
     this.fillColor = fillColor
   }
 
-  draw(ctx) {
+  draw() {
+    const ctx = this.ctx
     const { x, y, radius, fillColor } = this
     ctx.save()
     ctx.beginPath()

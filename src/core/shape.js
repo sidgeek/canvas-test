@@ -5,8 +5,9 @@ import { getTransformedPoint } from "./utils/transform"
 // 图形的基类
 export class Shape {
   constructor(props) {
-    const {x, y} = props
+    const {canvas, x, y} = props
     this._id = Shape.getId()
+    this.ctx = canvas.ctx
     this.x = x
     this.y = y
     this.listenerMap = new Map()

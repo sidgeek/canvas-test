@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
-import { click } from './core/const';
+// import { click } from './core/const';
 import { Circle } from './core/circle';
 // import { Point2d } from './core/point2d';
 // import { Polygon } from './core/polygon';
@@ -61,7 +61,10 @@ function App() {
   }, [])
 
   const addCircle = useCallback(() => {
+    if (!context) return
+
     const circle = new Circle({
+      canvas: context.canvas,
       x: 150,
       y: 150,
       radius: 50,
@@ -69,19 +72,21 @@ function App() {
     })
 
     // 添加
-    context && context.handlers.add(circle)
+    context.handlers.add(circle)
   }, [context])
 
 
   const addRect = useCallback(() => {
+    if (!context) return
     const rect = new Rect({
+      canvas: context.canvas,
       x: 0,
       y: 0,
       width: 100,
       height: 100,
       fillColor: 'black',
     })
-    context && context.handlers.add(rect)
+    context.handlers.add(rect)
   }, [context])
 
   return (
