@@ -9,9 +9,7 @@ export class Rect extends Shape {
     this.fillColor = fillColor
   }
   draw(ctx) {
-    debugger
     const { x, y, width, height, fillColor } = this
-    // console.log('>>>', x, y)
     ctx.beginPath()
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, width, height)
