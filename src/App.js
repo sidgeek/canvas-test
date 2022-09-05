@@ -2,10 +2,10 @@ import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
 // import { click } from './core/const';
-import { Circle } from './core/circle';
+import { Circle } from './core/shape/circle';
 // import { Point2d } from './core/point2d';
 // import { Polygon } from './core/polygon';
-import { Rect } from './core/rect';
+import { Rect } from './core/shape/rect';
 import Handlers from './core/handler'
 import { EditorContext } from "./core/context"
 

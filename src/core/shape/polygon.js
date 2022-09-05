@@ -1,5 +1,5 @@
-import { Point2d } from "./point2d"
-import { Seg2d } from "./seg2d"
+import { Point2d } from "../point2d"
+import { Seg2d } from "../seg2d"
 import { Shape } from "./shape"
 
 export class Polygon extends Shape {
