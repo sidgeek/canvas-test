@@ -106,8 +106,6 @@ class EventsHandler extends BaseHandler {
       // const mvY= currentTransformedCursor.y - dragStartPosition.y
       // ctx.translate(mvX, mvY);
     }
-
-    this.root.drawAll()
   }
 
   handleWheel = (evt) => {

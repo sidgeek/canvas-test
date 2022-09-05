@@ -1,6 +1,6 @@
 import { Point2d } from "./point2d"
 import { DD } from "./DragAndDrop"
-import { getTransformedDistance, getTransformedPoint } from "./utils/transform"
+import { getTransformedPoint } from "./utils/transform"
 
 // 图形的基类
 export class Shape {

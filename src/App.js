@@ -3,7 +3,7 @@ import './App.css';
 import { Canvas } from './core/canvas';
 import { click } from './core/const';
 import { Circle } from './core/circle';
-import { Point2d } from './core/point2d';
+// import { Point2d } from './core/point2d';
 // import { Polygon } from './core/polygon';
 import { Rect } from './core/rect';
 import Handlers from './core/handler'
@@ -36,10 +36,10 @@ function App() {
     handlers.add(circle)
     handlers.add(rect)
 
-    const points = []
-    for (let i = 0; i < 5; i++) {
-      points.push(Point2d.random(800, 600))
-    }
+    // const points = []
+    // for (let i = 0; i < 5; i++) {
+    //   points.push(Point2d.random(800, 600))
+    // }
     // const shape = new Polygon({
     //   x: points[0].x,
     //   y: points[0].y,
