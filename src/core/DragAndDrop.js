@@ -68,8 +68,6 @@ export const DD = {
           Math.abs(pos.x - elem.startPointerPos.x),
           Math.abs(pos.y - elem.startPointerPos.y)
         );
-        // console.log('>>> distance:', pos.x, elem.startPointerPos.x);
-        console.log('>>> distance:', distance);
         if (distance < dragDistance) {
           return;
         }

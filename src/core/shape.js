@@ -76,7 +76,6 @@ export class Shape {
 
 
   setAbsolutePosition(pos) {
-    console.log('>>> set', pos.x, pos.y);
     this.x = pos.x
     this.y = pos.y
 
