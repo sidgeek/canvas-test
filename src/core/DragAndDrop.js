@@ -125,11 +125,11 @@ export const DD = {
       //   drawNodes.push(drawNode);
       // }
     });
-    // // draw in a sync way
-    // // because mousemove event may trigger BEFORE batch draw is called
+    // // render in a sync way
+    // // because mousemove event may trigger BEFORE batch render is called
     // // but as we have not hit canvas updated yet, it will trigger incorrect mouseover/mouseout events
     // drawNodes.forEach((drawNode) => {
-    //   drawNode.draw();
+    //   drawNode.render();
     // });
   },
   _endDragAfter(evt) {

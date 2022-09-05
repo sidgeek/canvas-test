@@ -33,14 +33,14 @@ class Handlers {
 
   add(shape) {
     shape.addRoot(this)
-    shape.draw(this.canvasHandler.getCtx())
+    shape.render()
     this.allShapes.push(shape)
   }
 
-  drawAll() {
+  renderAll() {
     this.canvasHandler.clean()
     this.allShapes.forEach(s => {
-      s.draw(this.canvasHandler.getCtx())
+      s.render()
     })
   }
 

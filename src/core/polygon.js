@@ -9,7 +9,8 @@ export class Polygon extends Shape {
     this.points = points
     this.fillColor = fillColor
   }
-  draw(ctx) {
+  render() {
+    const ctx = this.ctx
     const { fillColor, points } = this
 
     ctx.save()

@@ -103,7 +103,7 @@ export class Shape {
       this._lastPos.y !== newNodePos.y
     ) {
       this.setAbsolutePosition(newNodePos);
-      this.root.drawAll()
+      this.root.renderAll()
     }
 
     this._lastPos = newNodePos;

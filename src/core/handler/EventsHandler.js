@@ -132,7 +132,7 @@ class EventsHandler extends BaseHandler {
 
     const context = this.canvas.getCtx()
     context.translate(pointX, pointY);
-    this.root.drawAll()
+    this.root.renderAll()
   }
 
   handleZoom = evt => {
@@ -143,7 +143,7 @@ class EventsHandler extends BaseHandler {
     context.scale(zoom, zoom);
     context.translate(-currentTransformedCursor.x, -currentTransformedCursor.y);
     
-    this.root.drawAll()
+    this.root.renderAll()
     evt.preventDefault()
     evt.stopPropagation()
   }

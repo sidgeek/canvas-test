@@ -8,7 +8,7 @@ export class Rect extends Shape {
     this.height = height
     this.fillColor = fillColor
   }
-  draw() {
+  render() {
     const ctx = this.ctx
     const { x, y, width, height, fillColor } = this
     ctx.beginPath()
