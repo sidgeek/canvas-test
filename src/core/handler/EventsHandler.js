@@ -2,6 +2,7 @@ import { EVENT } from "../const";
 import { DD } from "../DragAndDrop";
 // import { Point } from "../point";
 import { Point2d } from "../point2d";
+import { Shape } from "../shape/shape";
 import { getTransformedPoint } from "../utils/transform";
 import BaseHandler from "./BaseHandler";
 
@@ -19,9 +20,9 @@ class EventsHandler extends BaseHandler {
 
   initialize() {
     const canvas  = this.root.canvasHandler.getCanvasEle()
-    canvas.addEventListener(EVENT.MouseMove, this.handleEvent(EVENT.MouseMove))
-    canvas.addEventListener(EVENT.Mousedown, this.handleEvent(EVENT.Mousedown))
-    canvas.addEventListener(EVENT.Mouseup, this.handleEvent(EVENT.Mouseup))
+    canvas.addEventListener(EVENT.MouseMove, this.handleEvent(EVENT.MouseMove).bind(this))
+    canvas.addEventListener(EVENT.Mousedown, this.handleEvent(EVENT.Mousedown).bind(this))
+    canvas.addEventListener(EVENT.Mouseup, this.handleEvent(EVENT.Mouseup).bind(this))
 
     canvas.addEventListener(EVENT.Mousewheel, this.handleWheel)
   }
@@ -40,26 +41,32 @@ class EventsHandler extends BaseHandler {
     const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
 
     const shapes = this.root.getAllShapes() 
+    if (shapes.length === 0) return
 
     shapes.forEach(s => s.updateIsHovering(false))
 
+    let hoverId = null
+    const { type } = event
+    
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
-
       const isIn = shape.isPointInClosedRegion(canvasPos)
       && !event.isStopBubble
 
-      if (isIn) {
-        if (event.type === EVENT.MouseMove) {
-          shape.updateIsHovering(true)
-          break 
-        }
+      if (!isIn) { continue }
 
-        if (event.type === EVENT.Mousedown) {
-          shape._createDragElement(canvasPos)
-          break 
-        }
+      if (type === EVENT.MouseMove) { 
+        hoverId = shape.updateIsHovering(true)
+        break 
+      } else if (type === EVENT.Mousedown) {
+        shape._createDragElement(canvasPos)
+        break 
       }
+    }
+
+    const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
+    if (isHoverChange) {
+      this.root.renderAll()
     }
   }
 

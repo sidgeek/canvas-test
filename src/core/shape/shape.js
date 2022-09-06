@@ -3,6 +3,8 @@ import { DD } from "../DragAndDrop"
 import { getTransformedPoint } from "../utils/transform"
 
 // 图形的基类
+
+
 export class Shape {
   constructor(props) {
     const {canvas, x, y, width, height} = props
@@ -20,8 +22,15 @@ export class Shape {
   static id = 0
   static BorderPadding = 2
   static BorderColor = 'blue'
+  static LastHoverId = null
   static getId () {
     return Shape.id++
+  }
+
+  static checkIsHoverIdUpdate (currentId) {
+    const isChange = (Shape.LastHoverId !== currentId)
+    Shape.LastHoverId = currentId
+    return isChange
   }
 
   render() {
@@ -46,6 +55,7 @@ export class Shape {
 
   updateIsHovering(status) {
     this.isHovering = status
+    return this._id
   }
 
   on(eventName, listener) {
