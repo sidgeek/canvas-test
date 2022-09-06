@@ -66,6 +66,11 @@ class EventsHandler extends BaseHandler {
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
     if (isHoverChange) {
+      if (typeof hoverId === 'number') {
+        this.root.canvasHandler.updateCursor('pointer')
+      } else {
+        this.root.canvasHandler.updateCursor('default')
+      }
       this.root.renderAll()
     }
   }

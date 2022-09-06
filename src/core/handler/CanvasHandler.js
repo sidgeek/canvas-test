@@ -29,6 +29,11 @@ class CanvasHandler extends BaseHandler {
   getCtx() {
     return this.canvas.ctx
   }
+
+  updateCursor(cursor) {
+    const canvas = this.getCanvasEle()
+    canvas.style.cursor = cursor
+  }
 }
 
 export default CanvasHandler
