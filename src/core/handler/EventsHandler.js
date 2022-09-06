@@ -1,4 +1,4 @@
-import { click, move, mouseup, mousewheel } from "../const";
+import { EVENT } from "../const";
 import { DD } from "../DragAndDrop";
 // import { Point } from "../point";
 import { Point2d } from "../point2d";
@@ -19,11 +19,11 @@ class EventsHandler extends BaseHandler {
 
   initialize() {
     const canvas  = this.root.canvasHandler.getCanvasEle()
-    canvas.addEventListener(move, this.handleEvent(move))
-    canvas.addEventListener(click, this.handleEvent(click))
-    canvas.addEventListener(mouseup, this.handleEvent(mouseup))
+    canvas.addEventListener(EVENT.MouseMove, this.handleEvent(EVENT.MouseMove))
+    canvas.addEventListener(EVENT.Mousedown, this.handleEvent(EVENT.Mousedown))
+    canvas.addEventListener(EVENT.Mouseup, this.handleEvent(EVENT.Mouseup))
 
-    canvas.addEventListener(mousewheel, this.handleWheel)
+    canvas.addEventListener(EVENT.Mousewheel, this.handleWheel)
   }
 
   getNewEvent(event) {
@@ -37,37 +37,37 @@ class EventsHandler extends BaseHandler {
     event = this.getNewEvent(event)
     this.preHandleEvent(name, event)
     const ctx = this.canvas.getCtx()
-    this.root.getAllShapes().forEach((shape) => {
-      // 获取当前事件的所有监听者
-      const listerns = shape.listenerMap.get(name)
-      const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y);
+    const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
+
+    const shapes = this.root.getAllShapes() 
+    for(let i = 0; i < shapes.length; i++) {
+      let shape = shapes[i]
+
       const isIn = shape.isPointInClosedRegion(canvasPos)
       && !event.isStopBubble
 
       if (isIn) {
-        if (event.type === "mousedown") {
+        if (event.type === EVENT.Mousedown) {
           shape._createDragElement(canvasPos)
-        }
-        if (listerns) {
-          listerns.forEach((listener) => listener(event))
+          break 
         }
       }
-    })
+    }
   }
 
   preHandleEvent = (name, event) => {
     switch (name) {
-      case click: {
+      case EVENT.Mousedown: {
         this.handleMouseDown(event)
         break
       }
 
-      case mouseup: {
+      case EVENT.Mouseup: {
         this.handleMouseUp(event)
         break
       }
 
-      case move: {
+      case EVENT.MouseMove: {
         this.handleMouseMove(event)
         break
       }

@@ -10,6 +10,8 @@ export class Shape {
     this.ctx = canvas.ctx
     this.x = x
     this.y = y
+
+    this.isHovering = false
     this.listenerMap = new Map()
   }
 

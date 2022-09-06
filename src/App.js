@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
-// import { click } from './core/const';
+// import { Mousedown } from './core/const';
 import { Circle } from './core/shape/circle';
 // import { Point2d } from './core/point2d';
 // import { Polygon } from './core/polygon';
@@ -48,14 +48,14 @@ function App() {
     //   // console.log(event, 'polygon')
     // }
 
-    // circle.on(click, handleCircleClick)
-    // rect.on(click, handleRectClick)
-    // shape.on(click, handlePolygonClick)
+    // circle.on(Mousedown, handleCircleClick)
+    // rect.on(Mousedown, handleRectClick)
+    // shape.on(Mousedown, handlePolygonClick)
 
     return () => {
-      // circle.off(click, handleCircleClick)
-      // rect.off(click, handleRectClick)
-      // shape.off(click, handlePolygonClick)
+      // circle.off(Mousedown, handleCircleClick)
+      // rect.off(Mousedown, handleRectClick)
+      // shape.off(Mousedown, handlePolygonClick)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
