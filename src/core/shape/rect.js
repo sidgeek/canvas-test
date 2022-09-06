@@ -9,12 +9,13 @@ export class Rect extends Shape {
     this.fillColor = fillColor
   }
   render() {
+    super.render();
     const ctx = this.ctx
     const { x, y, width, height, fillColor } = this
-    ctx.beginPath()
+    ctx.save()
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, width, height)
-    ctx.closePath()
+    ctx.restore()
   }
 
   // 判断鼠标的点是否在图形内部

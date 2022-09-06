@@ -40,6 +40,9 @@ class EventsHandler extends BaseHandler {
     const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
 
     const shapes = this.root.getAllShapes() 
+
+    shapes.forEach(s => s.updateIsHovering(false))
+
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
 
@@ -47,6 +50,11 @@ class EventsHandler extends BaseHandler {
       && !event.isStopBubble
 
       if (isIn) {
+        if (event.type === EVENT.MouseMove) {
+          shape.updateIsHovering(true)
+          break 
+        }
+
         if (event.type === EVENT.Mousedown) {
           shape._createDragElement(canvasPos)
           break 

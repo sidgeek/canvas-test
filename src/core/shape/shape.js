@@ -5,19 +5,36 @@ import { getTransformedPoint } from "../utils/transform"
 // 图形的基类
 export class Shape {
   constructor(props) {
-    const {canvas, x, y} = props
+    const {canvas, x, y, width, height} = props
     this._id = Shape.getId()
     this.ctx = canvas.ctx
     this.x = x
     this.y = y
+    this.width = width
+    this.height = height
 
     this.isHovering = false
     this.listenerMap = new Map()
   }
 
   static id = 0
+  static BorderPadding = 2
+  static BorderColor = 'blue'
   static getId () {
     return Shape.id++
+  }
+
+  render() {
+    if (this.isHovering) {
+      const ctx = this.ctx
+      const { x, y, width, height } = this
+      ctx.save()
+      ctx.strokeStyle = Shape.BorderColor
+      const b = Shape.BorderPadding
+      const b_2 = b * 2
+      ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
+      ctx.restore()
+    }
   }
 
   getStartPoint() {
@@ -25,6 +42,10 @@ export class Shape {
       x: this.x,
       y: this.y
     }
+  }
+
+  updateIsHovering(status) {
+    this.isHovering = status
   }
 
   on(eventName, listener) {
