@@ -16,13 +16,19 @@ export class Shape {
     this.height = height
 
     this.isHovering = false
+    this.isSelected = false
     this.listenerMap = new Map()
   }
 
   static id = 0
   static BorderPadding = 2
   static BorderColor = 'blue'
+
+  static ControlPadding = 4
+  static ControlColor = 'red'
+
   static LastHoverId = null
+  static LastSelectedShapes = []
   static getId () {
     return Shape.id++
   }
@@ -33,17 +39,58 @@ export class Shape {
     return isChange
   }
 
+  static cleanLastSelectedShapes() {
+    Shape.LastSelectedShapes.map(s => s.updateIsSelected(false))
+    Shape.LastSelectedShapes = []
+  }
+
+  static addLastSelectedShapes (shape) {
+    Shape.cleanLastSelectedShapes()
+    Shape.LastSelectedShapes.push(shape)
+  }
+
+  static getLastSelectedShapes (shape) {
+    return Shape.LastSelectedShapes
+  }
+
   render() {
-    if (this.isHovering) {
-      const ctx = this.ctx
-      const { x, y, width, height } = this
-      ctx.save()
-      ctx.strokeStyle = Shape.BorderColor
-      const b = Shape.BorderPadding
-      const b_2 = b * 2
-      ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
-      ctx.restore()
+    if (this.isHovering && this.isSelected) {
+      this.drawBoard()
+      this.drawControls()
+    } else if (this.isSelected) {
+      this.drawControls()
+    } else if (this.isHovering) {
+      this.drawBoard()
     }
+  }
+
+  drawBoard() {
+    const ctx = this.ctx
+    const { x, y, width, height } = this
+    ctx.save()
+    ctx.strokeStyle = Shape.BorderColor
+    const b = Shape.BorderPadding
+    const b_2 = b * 2
+    ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
+    ctx.restore()
+  }
+
+  drawControls() {
+    const ctx = this.ctx
+    const { x, y, width, height } = this
+    ctx.save()
+    ctx.strokeStyle = Shape.ControlColor
+    const b = Shape.ControlPadding
+    const b_2 = b * 2
+    ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
+
+    const r = 10
+    const hr = r / 2
+    ctx.strokeRect(x - hr, y - hr, r, r)
+    ctx.strokeRect(x + width - hr, y - hr , r, r)
+    ctx.strokeRect(x - hr, y + height -hr, r, r)
+    ctx.strokeRect(x + width - hr, y + height - hr, r, r)
+    ctx.restore()
   }
 
   getStartPoint() {
@@ -56,6 +103,10 @@ export class Shape {
   updateIsHovering(status) {
     this.isHovering = status
     return this._id
+  }
+
+  updateIsSelected(status) {
+    this.isSelected = status
   }
 
   on(eventName, listener) {

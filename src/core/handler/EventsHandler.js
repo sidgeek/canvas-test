@@ -34,14 +34,41 @@ class EventsHandler extends BaseHandler {
     return event
   }
 
+  getMatchedShapes(event, isGetMulti) {
+    const ctx = this.canvas.getCtx()
+    const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
+    const shapes = this.root.getAllShapes() 
+
+    let matchedShapes = []
+    for(let i = 0; i < shapes.length; i++) {
+      let shape = shapes[i]
+      const isIn = shape.isPointInClosedRegion(canvasPos)
+      if (!isIn) { continue }
+
+      if (!isGetMulti) {
+        return [shape]
+      }
+      
+      matchedShapes.push(shape)
+    }
+
+    return matchedShapes
+  }
+
+  getMatchedShape(event) {
+    const mShapes = this.getMatchedShapes(event, false)
+    return mShapes.length > 0 ? mShapes[0] : null
+  }
+
   handleEvent = (name) => (event) => {
     event = this.getNewEvent(event)
-    this.preHandleEvent(name, event)
     const ctx = this.canvas.getCtx()
     const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
 
     const shapes = this.root.getAllShapes() 
     if (shapes.length === 0) return
+
+    this.preHandleEvent(name, event)
 
     shapes.forEach(s => s.updateIsHovering(false))
 
@@ -104,6 +131,16 @@ class EventsHandler extends BaseHandler {
     const ctx = this.canvas.getCtx()
     dragStartPosition = getTransformedPoint(ctx, event.offsetX, event.offsetY);
     this.root.setPointerPosition(event.point)
+
+    const matchedShape = this.getMatchedShape(event)
+    console.log(".. M", matchedShape);
+    // const lastShapes = Shape.getLastSelectedShapes()
+    if (matchedShape) {
+      Shape.addLastSelectedShapes(matchedShape)
+      matchedShape.updateIsSelected(true)
+    } else {
+      Shape.cleanLastSelectedShapes()
+    }
     // this.root.setPointerPosition(dragStartPosition)
   }
 

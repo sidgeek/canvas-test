@@ -33,8 +33,8 @@ class Handlers {
 
   add(shape) {
     shape.addRoot(this)
-    shape.render()
     this.allShapes.push(shape)
+    this.renderAll()
   }
 
   renderAll() {
