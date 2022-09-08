@@ -47,8 +47,8 @@ export class Polygon extends Shape {
     })
     // 奇数在内部
     if (total % 2 === 1) {
-      return true
+      return {isInZ: true}
     }
-    return false
+    return {isInZ: false}
   }
 }

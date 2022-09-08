@@ -26,7 +26,6 @@ export class Rect extends Shape {
       return { isIn: true, controlId}
     }
 
-
     const { x, y, width, height } = this
     const maxX = x + width
     const maxY = y + height

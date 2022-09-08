@@ -136,7 +136,7 @@ export class Shape {
     const {r, points} = this.getControlPoints()
     for(let i = 0; i < points.length; i++) {
       const p = points[i]
-      if (Math.abs(point.x - p.x) <= r/2 && Math.abs(point.y - p.y) <= r/2) {
+      if (Math.abs(point.x - p.x) <= r && Math.abs(point.y - p.y) <= r) {
         return i + 1
       }
     }

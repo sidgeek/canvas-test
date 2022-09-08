@@ -78,9 +78,7 @@ class EventsHandler extends BaseHandler {
     
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
-      const { isIn, controlId: cId } = shape.isPointInClosedRegion(canvasPos)
-      && !event.isStopBubble
-
+      const {isIn, controlId: cId} = shape.isPointInClosedRegion(canvasPos)
       if (!isIn) { continue }
 
       if (type === EVENT.MouseMove) { 
@@ -95,9 +93,10 @@ class EventsHandler extends BaseHandler {
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
     const isControlIdChange = Shape.checkIsControlIdUpdate(controlId)
+
     if (isHoverChange || isControlIdChange) {
-      if (typeof controlId === 'number') {
-        this.root.canvasHandler.updateCursor('mouse')
+      if (controlId) {
+        this.root.canvasHandler.updateCursor('move')
       } else if (typeof hoverId === 'number') {
         this.root.canvasHandler.updateCursor('pointer')
       } else {
