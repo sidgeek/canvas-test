@@ -1,7 +1,7 @@
 import { cos } from "./cos";
 import { sin } from "./sin";
 import { degreesToRadians } from "./radiansDegreesConversion";
-import { iMatrix, PiBy180 } from "../const";
+import { iMatrix, PiBy180 } from "../types/const";
 import { Point } from "../point";
 
 

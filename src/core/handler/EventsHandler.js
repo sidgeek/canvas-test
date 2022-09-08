@@ -1,4 +1,4 @@
-import { EVENT } from "../const";
+import { EVENT } from "../types/const";
 import { DD } from "../DragAndDrop";
 // import { Point } from "../point";
 import { Point2d } from "../point2d";

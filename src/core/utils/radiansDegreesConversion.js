@@ -1,4 +1,4 @@
-import { PiBy180 } from "../const";
+import { PiBy180 } from "../types/const";
 
 /**
  * Transforms degrees to radians.

@@ -1,4 +1,4 @@
-import { halfPI } from "../const";
+import { halfPI } from "../types/const";
 
 /**
  * Calculate the cos of an angle, avoiding returning floats for known results
