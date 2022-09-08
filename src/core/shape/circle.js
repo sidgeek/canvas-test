@@ -1,3 +1,4 @@
+import { SHAPE_POS } from "../types/const"
 import { Shape } from "./shape"
 
 export class Circle extends Shape {
@@ -22,15 +23,15 @@ export class Circle extends Shape {
 
   // 判断鼠标的点是否在图形内部
   isPointInClosedRegion(point) {
-    const controlId = super.isPointInControlPoint(point)
+    const { shapePos } = super.isPointInControlPoint(point)
 
-    if (controlId) {
-      return { isIn: true, controlId}
+    if (shapePos !== SHAPE_POS.Null) {
+      return { isIn: true, shapePos }
     }
 
     const { x, y, radius } = this
-    const isIn = point.distance({x, y}) <= radius * radius
-    return { isIn, controlId }
+    const isIn = point.distance({ x, y }) <= radius * radius
+    return { isIn, shapePos }
   }
 }
 

@@ -1,11 +1,12 @@
 import { Point2d } from "../point2d"
 import { DD } from "../DragAndDrop"
 import { getTransformedPoint } from "../utils/transform"
+import { SHAPE_POS } from '../types/const'
 
 // 图形的基类
 export class Shape {
   constructor(props) {
-    const {canvas, x, y, width, height} = props
+    const { canvas, x, y, width, height } = props
     this._id = Shape.getId()
     this.ctx = canvas.ctx
     this.x = x
@@ -29,21 +30,20 @@ export class Shape {
   static LastHoverId = null
   static LastSelectedShapes = []
 
-  // controlId
-  static LastControlId = 0 // 1 - 4
-  static getId () {
+  static ShapePos = SHAPE_POS.Null
+  static getId() {
     return Shape.id++
   }
 
-  static checkIsHoverIdUpdate (currentId) {
+  static checkIsHoverIdUpdate(currentId) {
     const isChange = (Shape.LastHoverId !== currentId)
     Shape.LastHoverId = currentId
     return isChange
   }
 
-  static checkIsControlIdUpdate (controlId) {
-    const isChange = (Shape.LastControlId !== controlId)
-    Shape.LastControlId = controlId
+  static checkIsShapePosUpdate(shapePos) {
+    const isChange = (Shape.ShapePos !== shapePos)
+    Shape.ShapePos = shapePos
     return isChange
   }
 
@@ -52,12 +52,12 @@ export class Shape {
     Shape.LastSelectedShapes = []
   }
 
-  static addLastSelectedShapes (shape) {
+  static addLastSelectedShapes(shape) {
     Shape.cleanLastSelectedShapes()
     Shape.LastSelectedShapes.push(shape)
   }
 
-  static getLastSelectedShapes (shape) {
+  static getLastSelectedShapes(shape) {
     return Shape.LastSelectedShapes
   }
 
@@ -77,7 +77,7 @@ export class Shape {
     const { x, y, width, height } = this
     ctx.save()
     ctx.strokeStyle = Shape.BorderColor
-    ctx.lineWidth = Shape.BorderWidth    
+    ctx.lineWidth = Shape.BorderWidth
     const b = Shape.BorderPadding
     const b_2 = b * 2
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
@@ -88,12 +88,12 @@ export class Shape {
     const { x, y, width, height } = this
     const r = 10
     const hr = r / 2
-    
+
     const points = [
-      {x: x - hr, y: y - hr},
-      {x: x + width - hr, y: y - hr},
-      {x: x - hr, y: y + height -hr},
-      {x: x + width - hr, y: y + height -hr}
+      { x: x - hr, y: y - hr },
+      { x: x + width - hr, y: y - hr },
+      { x: x - hr, y: y + height - hr },
+      { x: x + width - hr, y: y + height - hr }
     ]
 
     return { points, r }
@@ -132,16 +132,29 @@ export class Shape {
     this.isSelected = status
   }
 
+  getShapePosByControlId(id) {
+    switch (id) {
+      case 1: return SHAPE_POS.ETL
+      case 2: return SHAPE_POS.ETR
+      case 3: return SHAPE_POS.EBL
+      case 4: return SHAPE_POS.EBR
+      default: return SHAPE_POS.Null
+    }
+  }
+
   isPointInControlPoint(point) {
-    const {r, points} = this.getControlPoints()
-    for(let i = 0; i < points.length; i++) {
+    const { r, points } = this.getControlPoints()
+    let cId = 0
+    for (let i = 0; i < points.length; i++) {
       const p = points[i]
       if (Math.abs(point.x - p.x) <= r && Math.abs(point.y - p.y) <= r) {
-        return i + 1
+        cId = i + 1
+        break
       }
     }
 
-    return 0
+    const pos = this.getShapePosByControlId(cId)
+    return { controlId: cId, shapePos: pos }
   }
 
   on(eventName, listener) {
@@ -162,7 +175,7 @@ export class Shape {
     }
   }
 
-    // drag & drop
+  // drag & drop
   _createDragElement(canvasPos) {
     // const pos = evt.point
     // shape 的起始位置
@@ -214,7 +227,7 @@ export class Shape {
 
     const moveX = canvasPos.x - elem.offset.x
     const moveY = canvasPos.y - elem.offset.y
-    var newNodePos = {x: moveX, y: moveY}
+    var newNodePos = { x: moveX, y: moveY }
 
     if (
       !this._lastPos ||

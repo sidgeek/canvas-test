@@ -5,6 +5,7 @@ import { Point2d } from "../point2d";
 import { Shape } from "../shape/shape";
 import { getTransformedPoint } from "../utils/transform";
 import BaseHandler from "./BaseHandler";
+import { getShapePosCursor } from "../utils/cursorHelper";
 
 let currentTransformedCursor
 let dragStartPosition = { x: 0, y: 0 };
@@ -73,17 +74,17 @@ class EventsHandler extends BaseHandler {
     shapes.forEach(s => s.updateIsHovering(false))
 
     let hoverId = null
-    let controlId = 0
+    let shapePos = 0
     const { type } = event
     
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
-      const {isIn, controlId: cId} = shape.isPointInClosedRegion(canvasPos)
+      const {isIn, shapePos: sPos} = shape.isPointInClosedRegion(canvasPos)
       if (!isIn) { continue }
 
       if (type === EVENT.MouseMove) { 
         hoverId = shape.updateIsHovering(true)
-        controlId = cId
+        shapePos = sPos
         break 
       } else if (type === EVENT.Mousedown) {
         shape._createDragElement(canvasPos)
@@ -92,16 +93,11 @@ class EventsHandler extends BaseHandler {
     }
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
-    const isControlIdChange = Shape.checkIsControlIdUpdate(controlId)
+    const isShapePosChange = Shape.checkIsShapePosUpdate(shapePos)
 
-    if (isHoverChange || isControlIdChange) {
-      if (controlId) {
-        this.root.canvasHandler.updateCursor('move')
-      } else if (typeof hoverId === 'number') {
-        this.root.canvasHandler.updateCursor('pointer')
-      } else {
-        this.root.canvasHandler.updateCursor('default')
-      }
+    if (isHoverChange || isShapePosChange) {
+      const cursor = getShapePosCursor(shapePos)
+      this.root.canvasHandler.updateCursor(cursor)
       this.root.renderAll()
     }
   }
