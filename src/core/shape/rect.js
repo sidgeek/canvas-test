@@ -9,23 +9,30 @@ export class Rect extends Shape {
     this.fillColor = fillColor
   }
   render() {
-    super.render();
     const ctx = this.ctx
     const { x, y, width, height, fillColor } = this
     ctx.save()
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, width, height)
     ctx.restore()
+    super.render();
   }
 
   // 判断鼠标的点是否在图形内部
   isPointInClosedRegion(point) {
+    const controlId = super.isPointInControlPoint(point)
+
+    if (controlId) {
+      return { isIn: true, controlId}
+    }
+
+
     const { x, y, width, height } = this
     const maxX = x + width
     const maxY = y + height
     if (point.x >= x && point.x <= maxX && point.y >= y && point.y <= maxY) {
-      return true
+      return { isIn: true, controlId }
     }
-    return false
+    return { isIn: false, controlId }
   }
 }

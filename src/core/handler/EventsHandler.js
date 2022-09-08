@@ -42,7 +42,7 @@ class EventsHandler extends BaseHandler {
     let matchedShapes = []
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
-      const isIn = shape.isPointInClosedRegion(canvasPos)
+      const { isIn } = shape.isPointInClosedRegion(canvasPos)
       if (!isIn) { continue }
 
       if (!isGetMulti) {
@@ -73,17 +73,19 @@ class EventsHandler extends BaseHandler {
     shapes.forEach(s => s.updateIsHovering(false))
 
     let hoverId = null
+    let controlId = 0
     const { type } = event
     
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
-      const isIn = shape.isPointInClosedRegion(canvasPos)
+      const { isIn, controlId: cId } = shape.isPointInClosedRegion(canvasPos)
       && !event.isStopBubble
 
       if (!isIn) { continue }
 
       if (type === EVENT.MouseMove) { 
         hoverId = shape.updateIsHovering(true)
+        controlId = cId
         break 
       } else if (type === EVENT.Mousedown) {
         shape._createDragElement(canvasPos)
@@ -92,8 +94,11 @@ class EventsHandler extends BaseHandler {
     }
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
-    if (isHoverChange) {
-      if (typeof hoverId === 'number') {
+    const isControlIdChange = Shape.checkIsControlIdUpdate(controlId)
+    if (isHoverChange || isControlIdChange) {
+      if (typeof controlId === 'number') {
+        this.root.canvasHandler.updateCursor('mouse')
+      } else if (typeof hoverId === 'number') {
         this.root.canvasHandler.updateCursor('pointer')
       } else {
         this.root.canvasHandler.updateCursor('default')

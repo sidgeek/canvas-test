@@ -3,8 +3,6 @@ import { DD } from "../DragAndDrop"
 import { getTransformedPoint } from "../utils/transform"
 
 // 图形的基类
-
-
 export class Shape {
   constructor(props) {
     const {canvas, x, y, width, height} = props
@@ -21,7 +19,8 @@ export class Shape {
   }
 
   static id = 0
-  static BorderPadding = 2
+  static BorderPadding = 0
+  static BorderWidth = 4
   static BorderColor = 'blue'
 
   static ControlPadding = 4
@@ -29,6 +28,9 @@ export class Shape {
 
   static LastHoverId = null
   static LastSelectedShapes = []
+
+  // controlId
+  static LastControlId = 0 // 1 - 4
   static getId () {
     return Shape.id++
   }
@@ -36,6 +38,12 @@ export class Shape {
   static checkIsHoverIdUpdate (currentId) {
     const isChange = (Shape.LastHoverId !== currentId)
     Shape.LastHoverId = currentId
+    return isChange
+  }
+
+  static checkIsControlIdUpdate (controlId) {
+    const isChange = (Shape.LastControlId !== controlId)
+    Shape.LastControlId = controlId
     return isChange
   }
 
@@ -69,10 +77,26 @@ export class Shape {
     const { x, y, width, height } = this
     ctx.save()
     ctx.strokeStyle = Shape.BorderColor
+    ctx.lineWidth = Shape.BorderWidth    
     const b = Shape.BorderPadding
     const b_2 = b * 2
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
     ctx.restore()
+  }
+
+  getControlPoints() {
+    const { x, y, width, height } = this
+    const r = 10
+    const hr = r / 2
+    
+    const points = [
+      {x: x - hr, y: y - hr},
+      {x: x + width - hr, y: y - hr},
+      {x: x - hr, y: y + height -hr},
+      {x: x + width - hr, y: y + height -hr}
+    ]
+
+    return { points, r }
   }
 
   drawControls() {
@@ -84,12 +108,11 @@ export class Shape {
     const b_2 = b * 2
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
 
-    const r = 10
-    const hr = r / 2
-    ctx.strokeRect(x - hr, y - hr, r, r)
-    ctx.strokeRect(x + width - hr, y - hr , r, r)
-    ctx.strokeRect(x - hr, y + height -hr, r, r)
-    ctx.strokeRect(x + width - hr, y + height - hr, r, r)
+    const { points, r } = this.getControlPoints()
+    points.forEach(p => {
+      ctx.strokeRect(p.x, p.y, r, r)
+    })
+
     ctx.restore()
   }
 
@@ -107,6 +130,18 @@ export class Shape {
 
   updateIsSelected(status) {
     this.isSelected = status
+  }
+
+  isPointInControlPoint(point) {
+    const {r, points} = this.getControlPoints()
+    for(let i = 0; i < points.length; i++) {
+      const p = points[i]
+      if (Math.abs(point.x - p.x) <= r/2 && Math.abs(point.y - p.y) <= r/2) {
+        return i + 1
+      }
+    }
+
+    return 0
   }
 
   on(eventName, listener) {

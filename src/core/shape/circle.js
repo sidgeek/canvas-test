@@ -22,8 +22,15 @@ export class Circle extends Shape {
 
   // 判断鼠标的点是否在图形内部
   isPointInClosedRegion(point) {
+    const controlId = super.isPointInControlPoint(point)
+
+    if (controlId) {
+      return { isIn: true, controlId}
+    }
+
     const { x, y, radius } = this
-    return point.distance({x, y}) <= radius * radius
+    const isIn = point.distance({x, y}) <= radius * radius
+    return { isIn, controlId }
   }
 }
 
