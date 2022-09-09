@@ -2,6 +2,7 @@ import { Point2d } from "../point2d"
 import { DD } from "../DragAndDrop"
 import { getTransformedPoint } from "../utils/transform"
 import { SHAPE_POS } from '../types/const'
+import mathHelper from "../utils/mathHelper"
 
 // 图形的基类
 export class Shape {
@@ -92,8 +93,8 @@ export class Shape {
     const points = [
       { x: x - hr, y: y - hr },
       { x: x + width - hr, y: y - hr },
-      { x: x - hr, y: y + height - hr },
-      { x: x + width - hr, y: y + height - hr }
+      { x: x + width - hr, y: y + height - hr },
+      { x: x - hr, y: y + height - hr }
     ]
 
     return { points, r }
@@ -136,25 +137,37 @@ export class Shape {
     switch (id) {
       case 1: return SHAPE_POS.ETL
       case 2: return SHAPE_POS.ETR
-      case 3: return SHAPE_POS.EBL
-      case 4: return SHAPE_POS.EBR
+      case 3: return SHAPE_POS.EBR
+      case 4: return SHAPE_POS.EBL
       default: return SHAPE_POS.Null
     }
   }
 
   isPointInControlPoint(point) {
     const { r, points } = this.getControlPoints()
-    let cId = 0
+    // 是否在控制点上
     for (let i = 0; i < points.length; i++) {
       const p = points[i]
       if (Math.abs(point.x - p.x) <= r && Math.abs(point.y - p.y) <= r) {
-        cId = i + 1
-        break
+        const pos = this.getShapePosByControlId(i+1)
+        return { shapePos: pos }
       }
     }
 
-    const pos = this.getShapePosByControlId(cId)
-    return { controlId: cId, shapePos: pos }
+    // 是否在边上
+    let pos = SHAPE_POS.Null
+    const hr = r / 2
+    if (mathHelper.getPointToLineDis(points[0], points[1], point) < hr) {
+      pos = SHAPE_POS.ET
+    } else if (mathHelper.getPointToLineDis(points[1], points[2], point) < hr) {
+      pos = SHAPE_POS.ER
+    } else if (mathHelper.getPointToLineDis(points[2], points[3], point) < hr) {
+      pos = SHAPE_POS.EB
+    } else if (mathHelper.getPointToLineDis(points[3], points[0], point) < hr) {
+      pos = SHAPE_POS.EL
+    }
+
+    return { shapePos: pos }
   }
 
   on(eventName, listener) {
