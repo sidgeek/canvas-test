@@ -207,12 +207,6 @@ export class Shape {
     });
   }
 
-  isDragging() {
-    const elem = DD._dragElements.get(this._id);
-    return elem ? elem.dragStatus === 'dragging' : false;
-  }
-
-
   setAbsolutePosition(pos) {
     this.x = pos.x
     this.y = pos.y
