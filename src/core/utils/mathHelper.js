@@ -64,7 +64,18 @@ function getMidPointOfTwoPoints(p1, p2) {
   }
 }
 
-export default {
+// 获取垂足
+function getPointToLineCuiZu(start, end, point) {
+  const A = end.y - start.y
+  const B = start.x - end.x
+  const C = -start.y * B - start.x * A
+  const D = A * point.y - B * point.x
+  const x = -(B * D + A * C) / (B * B + A * A)
+  const y = B === 0 ? point.y : -(A * x + C) / B
+  return { x, y  }
+}
+
+const mathHelper = {
   getEndPointOfSlash,
   getDisOfTwoPoints,
   getSlopeByTwoPoint,
@@ -72,5 +83,8 @@ export default {
   getPointOffsetPos,
   getPointToLineDis,
   getSymmetryPoint,
-  getMidPointOfTwoPoints
+  getMidPointOfTwoPoints,
+  getPointToLineCuiZu
 }
+
+export default mathHelper

@@ -13,7 +13,7 @@ export class Rect extends Shape {
     const ctx = this.ctx
     const { x, y, width, height, fillColor } = this
     ctx.save()
-    super.scaleByTopLeft()
+    super.scaleByPoint()
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, width, height)
     ctx.restore()

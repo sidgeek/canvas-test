@@ -91,18 +91,19 @@ export class Shape {
     ctx.translate(-this.topLeft.x, -this.topLeft.y)
   }
 
-  scaleByPoint(point){
+  scaleByPoint(){
     const ctx = this.ctx
-    ctx.translate(point.x, point.y)
+    console.log('>>> 12:', this.translateX, this.translateY);
+    ctx.translate(this.translateX, this.translateY)
     ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-point.x, -point.y)
+    ctx.translate(-this.translateX, -this.translateY)
   }
 
   drawBoard() {
     const ctx = this.ctx
     const { x, y, width, height } = this
     ctx.save()
-    this.scaleByTopLeft()
+    this.scaleByPoint()
     ctx.strokeStyle = Shape.BorderColor
     ctx.lineWidth = Shape.BorderWidth
     const b = Shape.BorderPadding
@@ -130,7 +131,7 @@ export class Shape {
     const ctx = this.ctx
     const { x, y, width, height } = this
     ctx.save()
-    this.scaleByTopLeft()
+    this.scaleByPoint()
 
     ctx.strokeStyle = Shape.ControlColor
     const b = Shape.ControlPadding
@@ -163,6 +164,11 @@ export class Shape {
     this.scaleY = this.scaleY * ratio
   }
 
+  updateTranslate(point) {
+    this.translateX = point.x
+    this.translateY = point.y
+  }
+
   updateIsSelected(status) {
     this.isSelected = status
   }
@@ -186,6 +192,40 @@ export class Shape {
       case SHAPE_POS.EBL: return { x: x + width, y } 
       default: return { x: 0, y: 0 }
     }
+  }
+
+  getDragEdgeScale(shapePos, currentPointerPos) {
+    const { x, y, width, height } = this
+    const scalePos = this.getScalePosByShapePos(shapePos)
+    let dragPos, oldDis
+   
+    switch (shapePos) {
+      case SHAPE_POS.ETL: { 
+        dragPos = { x, y }
+        break
+      }
+      case SHAPE_POS.ETR: {
+        dragPos = { x: x + width, y }
+        break
+      }
+      case SHAPE_POS.EBR: { 
+        dragPos = { x: x + width, y: y+ height }
+        break
+       }
+      case SHAPE_POS.EBL: { 
+        dragPos = { x: x + width, y}
+        break
+      } 
+      default: {dragPos =  { x, y }}
+    }
+
+    const p1 = { x: x - width / 2, y: y + height}
+    const p2 = mathHelper.getPointToLineCuiZu(scalePos, dragPos, p1)
+    const p3 = {x: p1.x - (p2.x - scalePos.x), y: p1.y - (p2.y - scalePos.y)}
+    oldDis = mathHelper.getDisOfTwoPoints(scalePos, dragPos)
+    const newDis = mathHelper.getPointToLineDis(scalePos, p3, currentPointerPos)
+    const ratio = newDis / oldDis
+    return ratio
   }
 
   isPointInControlPoint(point) {

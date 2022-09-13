@@ -138,9 +138,12 @@ class EventsHandler extends BaseHandler {
         const pos = Shape.ShapeMouseDownPos
 
         if (pos.startsWith('edge')) {
-          const dragPos = node.getScalePosByShapePos(pos)
-          // node.scaleByPoint()
-          console.log(' drag >>> ', dragPos)
+          const scalePos = node.getScalePosByShapePos(pos)
+          const pointerPos = node.root.getPointerPosition()
+          const canvasPos = getTransformedPoint(node.ctx, pointerPos.x, pointerPos.y)
+          
+          const scale = node.getDragEdgeScale(pos, canvasPos)
+          node.root.scaleByPoint(node, scalePos, scale)
         }
         
         break

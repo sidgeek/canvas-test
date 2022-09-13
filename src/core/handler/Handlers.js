@@ -42,6 +42,13 @@ class Handlers {
     this.renderAll()
   }
 
+  scaleByPoint(shape, point, ratio) {
+    shape.updateScale(ratio)
+    console.log('>>> update p:', point);
+    shape.updateTranslate(point)
+    this.renderAll()
+  }
+
   renderAll() {
     this.canvasHandler.clean()
     this.allShapes.forEach(s => {
