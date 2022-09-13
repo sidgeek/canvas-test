@@ -95,7 +95,8 @@ class EventsHandler extends BaseHandler {
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
     const isShapePosChange = Shape.checkIsShapePosUpdate(curShapePos)
-    console.log('>>> hoverId', hoverId, curShapePos);
+
+    this.afterHandleEvent(name, event)
 
     if (isHoverChange || isShapePosChange) {
       const cursor = getShapePosCursor(curShapePos)
@@ -128,6 +129,29 @@ class EventsHandler extends BaseHandler {
   }
 
 
+  afterHandleEvent = (name, event) => {
+    if (!DD.isDragging) return
+    switch (name) {
+      case EVENT.MouseMove: {
+        // this.handleMouseMove(event)
+        const node = DD.node
+        const pos = Shape.ShapeMouseDownPos
+
+        if (pos.startsWith('edge')) {
+          const dragPos = node.getScalePosByShapePos(pos)
+          // node.scaleByPoint()
+          console.log(' drag >>> ', dragPos)
+        }
+        
+        break
+      }
+
+      default: {
+      }
+    }
+  }
+
+
   handleMouseDown(event) {
     isDragging = true;
     this.root.setPointerPosition(event.point)
@@ -137,6 +161,7 @@ class EventsHandler extends BaseHandler {
     // const lastShapes = Shape.getLastSelectedShapes()
     if (matchedShape) {
       Shape.addLastSelectedShapes(matchedShape)
+      Shape.ShapeMouseDownPos = Shape.ShapeHoverPos
       matchedShape.updateIsSelected(true)
     } else {
       Shape.cleanLastSelectedShapes()
@@ -145,6 +170,7 @@ class EventsHandler extends BaseHandler {
 
   handleMouseUp(event) {
     isDragging = false
+    Shape.ShapeMouseDownPos = Shape.Null
     this.root.setPointerPosition(null)
   }
 

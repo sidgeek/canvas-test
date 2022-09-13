@@ -13,6 +13,8 @@ export class Shape {
     this.y = y
     this.scaleX = 1
     this.scaleY = 1
+    this.translateX = 0
+    this.translateY = 0
     this.width = width
     this.height = height
 
@@ -87,6 +89,13 @@ export class Shape {
     ctx.translate(this.topLeft.x, this.topLeft.y)
     ctx.scale(this.scaleX, this.scaleY);
     ctx.translate(-this.topLeft.x, -this.topLeft.y)
+  }
+
+  scaleByPoint(point){
+    const ctx = this.ctx
+    ctx.translate(point.x, point.y)
+    ctx.scale(this.scaleX, this.scaleY);
+    ctx.translate(-point.x, -point.y)
   }
 
   drawBoard() {
@@ -168,6 +177,17 @@ export class Shape {
     }
   }
 
+  getScalePosByShapePos(shapePos) {
+    const { x, y, width, height } = this
+    switch (shapePos) {
+      case SHAPE_POS.ETL: return { x: x + width, y: y + height }
+      case SHAPE_POS.ETR: return { x, y: y + height }
+      case SHAPE_POS.EBR: return { x, y }
+      case SHAPE_POS.EBL: return { x: x + width, y } 
+      default: return { x: 0, y: 0 }
+    }
+  }
+
   isPointInControlPoint(point) {
     const { r, points } = this.getControlPoints()
     // 是否在控制点上
@@ -222,18 +242,16 @@ export class Shape {
 
   _setDragPosition(elem) {
     const pos = this.root.getPointerPosition()
+    const shapePos = Shape.ShapeMouseDownPos
     const ctx = this.root.canvasHandler.getCtx()
 
-    if (!pos) {
-      return;
-    }
+    if (!pos || (shapePos !== SHAPE_POS.Body)) return
 
+    // 当前鼠标对应的canvas坐标
     const canvasPos = getTransformedPoint(ctx, pos.x, pos.y)
 
     const moveX = canvasPos.x - elem.offset.x
     const moveY = canvasPos.y - elem.offset.y
-
-    console.log('>>> mouseDown pos:', Shape.ShapeMouseDownPos);
 
     var newNodePos = { x: moveX, y: moveY }
 

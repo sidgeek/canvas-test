@@ -1,3 +1,5 @@
+import { getTransformedPoint } from "../utils/transform";
+
 export const DD = {
   get isDragging() {
     var flag = false;
@@ -48,64 +50,30 @@ export const DD = {
 
   // methods
   _drag(evt) {
-    // Array<Node>
-    const nodesToFireEvents = [];
     DD._dragElements.forEach((elem, key) => {
       const { node } = elem;
-      const { root } = node
+      const pos = node.root.getPointerPosition()
+      if (!pos) { return;}
 
-      // console.log('>>> node', node);
-
-      // we need to find pointer relative to that node
-      // const stage = node.getStage();
-      
-      // stage.setPointersPositions(evt);
-
-      // it is possible that user call startDrag without any event
-      // it that case we need to detect first movable pointer and attach it into the node
-      if (elem.pointerId === undefined) {
-        // elem.pointerId = Util._getFirstPointerId(evt);
-      }
-      // const pos = stage._changedPointerPositions.find(
-      //   (pos) => pos.id === elem.pointerId
-      // );
-
-      const pos = root.getPointerPosition()
-
-      // not related pointer
-      if (!pos) {
-        return;
-      }
-
-   
       if (elem.dragStatus !== 'dragging') {
         // var dragDistance = node.dragDistance(); // 移动了多少才算移动
-        var dragDistance = 10; //
+        const dragDistance = 10; //
+        const canvasPos = getTransformedPoint(node.ctx, pos.x, pos.y)
         var distance = Math.max(
-          Math.abs(pos.x - elem.startPointerPos.x),
-          Math.abs(pos.y - elem.startPointerPos.y)
+          Math.abs(canvasPos.x - elem.startPointerPos.x),
+          Math.abs(canvasPos.y - elem.startPointerPos.y)
         );
+
+        // console.log('>>> distance', distance);
         if (distance < dragDistance) {
           return;
         }
+        
         // 设置开始拖动状态
         elem.dragStatus = 'dragging';
       }
       node._setDragPosition(elem);
-      // nodesToFireEvents.push(node);
-    });
-    // call dragmove only after ALL positions are changed
-    // nodesToFireEvents.forEach((node) => {
-    //   node.fire(
-    //     'dragmove',
-    //     {
-    //       type: 'dragmove',
-    //       target: node,
-    //       evt: evt,
-    //     },
-    //     true
-    //   );
-    // });
+    });;
   },
 
   // dragBefore and dragAfter allows us to set correct order of events
@@ -113,7 +81,7 @@ export const DD = {
   _endDragBefore(evt) {
     // const drawNodes = [];
     DD._dragElements.forEach((elem) => {
-      const { node } = elem;
+      // const { node } = elem;
       // we need to find pointer relative to that node
       // const stage = node.getStage();
       // if (evt) {
