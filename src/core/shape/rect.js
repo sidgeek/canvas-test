@@ -32,7 +32,7 @@ export class Rect extends Shape {
     const maxX = x + width
     const maxY = y + height
     if (point.x >= x && point.x <= maxX && point.y >= y && point.y <= maxY) {
-      return { isIn: true, shapePos }
+      return { isIn: true, shapePos: SHAPE_POS.Body }
     }
     return { isIn: false, shapePos }
   }

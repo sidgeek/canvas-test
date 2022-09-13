@@ -1,4 +1,4 @@
-import { EVENT } from "../types/const";
+import { EVENT, SHAPE_POS } from "../types/const";
 import { DD } from "./DragAndDrop";
 // import { Point } from "../point";
 import { Point2d } from "../point2d";
@@ -8,7 +8,6 @@ import BaseHandler from "./BaseHandler";
 import { getShapePosCursor } from "../utils/cursorHelper";
 
 let currentTransformedCursor
-let dragStartPosition = { x: 0, y: 0 };
 let isDragging = false
 const mousePos = document.getElementById('mouse-pos');
 const transformedMousePos = document.getElementById('transformed-mouse-pos');
@@ -74,7 +73,7 @@ class EventsHandler extends BaseHandler {
     shapes.forEach(s => s.updateIsHovering(false))
 
     let hoverId = null
-    let curShapePos = 0
+    let curShapePos = SHAPE_POS.Null
     const { type } = event
     
     for(let i = 0; i < shapes.length; i++) {
@@ -96,6 +95,7 @@ class EventsHandler extends BaseHandler {
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
     const isShapePosChange = Shape.checkIsShapePosUpdate(curShapePos)
+    console.log('>>> hoverId', hoverId, curShapePos);
 
     if (isHoverChange || isShapePosChange) {
       const cursor = getShapePosCursor(curShapePos)
@@ -130,8 +130,6 @@ class EventsHandler extends BaseHandler {
 
   handleMouseDown(event) {
     isDragging = true;
-    const ctx = this.canvas.getCtx()
-    dragStartPosition = getTransformedPoint(ctx, event.offsetX, event.offsetY);
     this.root.setPointerPosition(event.point)
 
     const matchedShape = this.getMatchedShape(event)
@@ -143,7 +141,6 @@ class EventsHandler extends BaseHandler {
     } else {
       Shape.cleanLastSelectedShapes()
     }
-    // this.root.setPointerPosition(dragStartPosition)
   }
 
   handleMouseUp(event) {
@@ -161,9 +158,6 @@ class EventsHandler extends BaseHandler {
     if (DD.isDragging) {
       event.preventDefault();
     } else if (isDragging){
-      // const mvX= currentTransformedCursor.x - dragStartPosition.x
-      // const mvY= currentTransformedCursor.y - dragStartPosition.y
-      // ctx.translate(mvX, mvY);
     }
   }
 

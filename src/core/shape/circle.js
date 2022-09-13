@@ -32,7 +32,7 @@ export class Circle extends Shape {
 
     const { x, y, radius } = this
     const isIn = point.distance({ x, y }) <= radius * radius
-    return { isIn, shapePos }
+    return { isIn, shapePos: isIn ? SHAPE_POS.Body : SHAPE_POS.Null}
   }
 }
 
