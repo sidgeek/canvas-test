@@ -73,10 +73,6 @@ export const DD = {
         }
         // 设置开始拖动状态
         elem.dragStatus = 'dragging';
-        // a user can stop dragging inside `dragstart`
-        if (!node.isDragging()) {
-          return;
-        }
       }
       node._setDragPosition(evt, elem);
       // nodesToFireEvents.push(node);
