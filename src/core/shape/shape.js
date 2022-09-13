@@ -82,7 +82,7 @@ export class Shape {
     ctx.translate(-this.center.x, -this.center.y)
   }
 
-  scaleTopLeft(){
+  scaleByTopLeft(){
     const ctx = this.ctx
     ctx.translate(this.topLeft.x, this.topLeft.y)
     ctx.scale(this.scaleX, this.scaleY);
@@ -93,7 +93,7 @@ export class Shape {
     const ctx = this.ctx
     const { x, y, width, height } = this
     ctx.save()
-    this.scaleTopLeft()
+    this.scaleByTopLeft()
     ctx.strokeStyle = Shape.BorderColor
     ctx.lineWidth = Shape.BorderWidth
     const b = Shape.BorderPadding
@@ -121,7 +121,7 @@ export class Shape {
     const ctx = this.ctx
     const { x, y, width, height } = this
     ctx.save()
-    this.scaleTopLeft()
+    this.scaleByTopLeft()
 
     ctx.strokeStyle = Shape.ControlColor
     const b = Shape.ControlPadding
