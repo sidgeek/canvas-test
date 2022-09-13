@@ -74,29 +74,31 @@ class EventsHandler extends BaseHandler {
     shapes.forEach(s => s.updateIsHovering(false))
 
     let hoverId = null
-    let shapePos = 0
+    let curShapePos = 0
     const { type } = event
     
     for(let i = 0; i < shapes.length; i++) {
       let shape = shapes[i]
-      const {isIn, shapePos: sPos} = shape.isPointInClosedRegion(canvasPos)
+      const {isIn, shapePos} = shape.isPointInClosedRegion(canvasPos)
       if (!isIn) { continue }
 
       if (type === EVENT.MouseMove) { 
         hoverId = shape.updateIsHovering(true)
-        shapePos = sPos
+        curShapePos = shapePos
         break 
       } else if (type === EVENT.Mousedown) {
-        shape._createDragElement(canvasPos)
+        if (!DD._dragElements.has(shape._id)) {
+          shape._createDragElement(canvasPos);
+        }
         break 
       }
     }
 
     const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
-    const isShapePosChange = Shape.checkIsShapePosUpdate(shapePos)
+    const isShapePosChange = Shape.checkIsShapePosUpdate(curShapePos)
 
     if (isHoverChange || isShapePosChange) {
-      const cursor = getShapePosCursor(shapePos)
+      const cursor = getShapePosCursor(curShapePos)
       this.root.canvasHandler.updateCursor(cursor)
       this.root.renderAll()
     }

@@ -31,7 +31,8 @@ export class Shape {
   static LastHoverId = null
   static LastSelectedShapes = []
 
-  static ShapePos = SHAPE_POS.Null
+  static ShapeHoverPos = SHAPE_POS.Null
+  static ShapeMouseDownPos = SHAPE_POS.Null
   static getId() {
     return Shape.id++
   }
@@ -42,9 +43,9 @@ export class Shape {
     return isChange
   }
 
-  static checkIsShapePosUpdate(shapePos) {
-    const isChange = (Shape.ShapePos !== shapePos)
-    Shape.ShapePos = shapePos
+  static checkIsShapePosUpdate(currentShapePos) {
+    const isChange = (Shape.ShapeHoverPos !== currentShapePos)
+    Shape.ShapeHoverPos = currentShapePos
     return isChange
   }
 
@@ -204,15 +205,6 @@ export class Shape {
       dragStatus: 'ready',
       pointerId: this._id,
     });
-  }
-
-  startDrag(evt) {
-    if (!DD._dragElements.has(this._id)) {
-      this._createDragElement(evt);
-    }
-
-    const elem = DD._dragElements.get(this._id);
-    elem.dragStatus = 'dragging';
   }
 
   isDragging() {

@@ -71,7 +71,8 @@ export const DD = {
         if (distance < dragDistance) {
           return;
         }
-        node.startDrag({ evt });
+        // 设置开始拖动状态
+        elem.dragStatus = 'dragging';
         // a user can stop dragging inside `dragstart`
         if (!node.isDragging()) {
           return;
