@@ -9,6 +9,8 @@ import { Rect } from './core/shape/rect';
 import Handlers from './core/handler'
 import { EditorContext } from "./core/context"
 
+let rect;
+
 function App() {
   const context = useContext(EditorContext)
 
@@ -76,9 +78,10 @@ function App() {
   }, [context])
 
 
+
   const addRect = useCallback(() => {
     if (!context) return
-    const rect = new Rect({
+    rect = new Rect({
       canvas: context.canvas,
       x: 0,
       y: 0,
@@ -89,11 +92,17 @@ function App() {
     context.handlers.add(rect)
   }, [context])
 
+  const scaleRect = useCallback(() => {
+    if (!context) return
+    context.handlers.scale(rect, 1.1)
+  }, [context])
+
   return (
     <div className="App">
       <canvas id='canvas' />
       <div>
         <button onClick={addRect}>add Rect </button>
+        <button onClick={scaleRect}>scale Rect </button>
         <button onClick={addCircle}>add Circle </button>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { Point2d } from "../point2d"
-import { DD } from "../handler/DragAndDrop"
 import { getTransformedPoint } from "../utils/transform"
 import { SHAPE_POS } from '../types/const'
 import mathHelper from "../utils/mathHelper"
@@ -12,6 +11,8 @@ export class Shape {
     this.ctx = canvas.ctx
     this.x = x
     this.y = y
+    this.scaleX = 1
+    this.scaleY = 1
     this.width = width
     this.height = height
 
@@ -82,6 +83,9 @@ export class Shape {
     ctx.lineWidth = Shape.BorderWidth
     const b = Shape.BorderPadding
     const b_2 = b * 2
+    ctx.translate(this.center.x, this.center.y)
+    ctx.scale(this.scaleX, this.scaleY);
+    ctx.translate(-this.center.x, -this.center.y)
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
     ctx.restore()
   }
@@ -108,6 +112,11 @@ export class Shape {
     ctx.strokeStyle = Shape.ControlColor
     const b = Shape.ControlPadding
     const b_2 = b * 2
+    
+    ctx.translate(this.center.x, this.center.y)
+    ctx.scale(this.scaleX, this.scaleY);
+    ctx.translate(-this.center.x, -this.center.y)
+
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
 
     const { points, r } = this.getControlPoints()
@@ -128,6 +137,11 @@ export class Shape {
   updateIsHovering(status) {
     this.isHovering = status
     return this._id
+  }
+
+  updateScale(ratio) {
+    this.scaleX = this.scaleX * ratio
+    this.scaleY = this.scaleY * ratio
   }
 
   updateIsSelected(status) {
@@ -232,5 +246,9 @@ export class Shape {
 
   addRoot(root) {
     this.root = root
+  }
+
+  get center() {
+    return { x: this.x + this.width / 2, y: this.y + this.height / 2};
   }
 }

@@ -14,6 +14,9 @@ export class Rect extends Shape {
     const { x, y, width, height, fillColor } = this
     ctx.save()
     ctx.fillStyle = fillColor
+    ctx.translate(this.center.x, this.center.y)
+    ctx.scale(this.scaleX, this.scaleY);
+    ctx.translate(-this.center.x, -this.center.y)
     ctx.fillRect(x, y, width, height)
     ctx.restore()
     super.render();

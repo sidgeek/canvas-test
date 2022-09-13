@@ -37,6 +37,11 @@ class Handlers {
     this.renderAll()
   }
 
+  scale(shape, ratio) {
+    shape.updateScale(ratio)
+    this.renderAll()
+  }
+
   renderAll() {
     this.canvasHandler.clean()
     this.allShapes.forEach(s => {
