@@ -91,7 +91,7 @@ export const DD = {
         // 设置开始拖动状态
         elem.dragStatus = 'dragging';
       }
-      node._setDragPosition(evt, elem);
+      node._setDragPosition(elem);
       // nodesToFireEvents.push(node);
     });
     // call dragmove only after ALL positions are changed

@@ -196,7 +196,7 @@ export class Shape {
     return this
   }
 
-  _setDragPosition(evt, elem) {
+  _setDragPosition(elem) {
     const pos = this.root.getPointerPosition()
     const ctx = this.root.canvasHandler.getCtx()
 
@@ -208,6 +208,9 @@ export class Shape {
 
     const moveX = canvasPos.x - elem.offset.x
     const moveY = canvasPos.y - elem.offset.y
+
+    console.log('>>> mouseDown pos:', Shape.ShapeMouseDownPos);
+
     var newNodePos = { x: moveX, y: moveY }
 
     if (
