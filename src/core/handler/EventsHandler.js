@@ -88,7 +88,7 @@ class EventsHandler extends BaseHandler {
         break 
       } else if (type === EVENT.Mousedown) {
         if (!DD._dragElements.has(shape._id)) {
-          shape._createDragElement(canvasPos);
+          DD._createDragElement(canvasPos, shape);
         }
         break 
       }

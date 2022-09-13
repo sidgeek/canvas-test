@@ -189,24 +189,6 @@ export class Shape {
     }
   }
 
-  // drag & drop
-  _createDragElement(canvasPos) {
-    // const pos = evt.point
-    // shape 的起始位置
-    const ap = this.getStartPoint()
-
-    DD._dragElements.set(this._id, {
-      node: this,
-      startPointerPos: canvasPos,
-      offset: {
-        x: canvasPos.x - ap.x,
-        y: canvasPos.y - ap.y,
-      },
-      dragStatus: 'ready',
-      pointerId: this._id,
-    });
-  }
-
   setAbsolutePosition(pos) {
     this.x = pos.x
     this.y = pos.y

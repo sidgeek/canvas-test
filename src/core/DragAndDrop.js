@@ -29,6 +29,23 @@ export const DD = {
    */
   _dragElements: new Map(),
 
+  // drag & drop
+  _createDragElement(startPointerPos, node) {
+    // shape 的起始位置
+    const ap = node.getStartPoint()
+
+    DD._dragElements.set(node._id, {
+      node,
+      startPointerPos,
+      offset: {
+        x: startPointerPos.x - ap.x,
+        y: startPointerPos.y - ap.y,
+      },
+      dragStatus: 'ready',
+      pointerId: node._id,
+    });
+  },
+
   // methods
   _drag(evt) {
     // Array<Node>
