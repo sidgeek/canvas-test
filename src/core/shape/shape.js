@@ -75,17 +75,22 @@ export class Shape {
     }
   }
 
+  scaleByCenter(){
+    const ctx = this.ctx
+    ctx.translate(this.center.x, this.center.y)
+    ctx.scale(this.scaleX, this.scaleY);
+    ctx.translate(-this.center.x, -this.center.y)
+  }
+
   drawBoard() {
     const ctx = this.ctx
     const { x, y, width, height } = this
     ctx.save()
+    this.scaleByCenter()
     ctx.strokeStyle = Shape.BorderColor
     ctx.lineWidth = Shape.BorderWidth
     const b = Shape.BorderPadding
     const b_2 = b * 2
-    ctx.translate(this.center.x, this.center.y)
-    ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-this.center.x, -this.center.y)
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
     ctx.restore()
   }
@@ -109,14 +114,12 @@ export class Shape {
     const ctx = this.ctx
     const { x, y, width, height } = this
     ctx.save()
+    this.scaleByCenter()
+
     ctx.strokeStyle = Shape.ControlColor
     const b = Shape.ControlPadding
     const b_2 = b * 2
     
-    ctx.translate(this.center.x, this.center.y)
-    ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-this.center.x, -this.center.y)
-
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
 
     const { points, r } = this.getControlPoints()
