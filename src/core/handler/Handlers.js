@@ -1,3 +1,4 @@
+import { Shape } from "../shape/shape"
 import CanvasHandler from "./CanvasHandler"
 import DragHandler from "./DragHandler"
 import EventsHandler from "./EventsHandler"
@@ -44,7 +45,7 @@ class Handlers {
 
   scaleByPoint(shape, point, ratio) {
     shape.updateScale(ratio)
-    console.log('>>> update p:', point);
+    // console.log('>>> update p:', point);
     shape.updateTranslate(point)
     this.renderAll()
   }

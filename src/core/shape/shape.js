@@ -36,6 +36,8 @@ export class Shape {
 
   static ShapeHoverPos = SHAPE_POS.Null
   static ShapeMouseDownPos = SHAPE_POS.Null
+
+  static InitScale = 1
   static getId() {
     return Shape.id++
   }
@@ -93,7 +95,7 @@ export class Shape {
 
   scaleByPoint(){
     const ctx = this.ctx
-    console.log('>>> 12:', this.translateX, this.translateY);
+    // console.log('>>> 12:', this.translateX, this.translateY);
     ctx.translate(this.translateX, this.translateY)
     ctx.scale(this.scaleX, this.scaleY);
     ctx.translate(-this.translateX, -this.translateY)
@@ -160,8 +162,9 @@ export class Shape {
   }
 
   updateScale(ratio) {
-    this.scaleX = this.scaleX * ratio
-    this.scaleY = this.scaleY * ratio
+    this.scaleX = Shape.InitScale * ratio
+    this.scaleY = Shape.InitScale * ratio
+    console.log('>>> this.scaleX', this.scaleX);
   }
 
   updateTranslate(point) {

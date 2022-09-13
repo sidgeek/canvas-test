@@ -131,22 +131,35 @@ class EventsHandler extends BaseHandler {
 
   afterHandleEvent = (name, event) => {
     if (!DD.isDragging) return
+    const node = DD.node
+    const pos = Shape.ShapeMouseDownPos
+
     switch (name) {
       case EVENT.MouseMove: {
         // this.handleMouseMove(event)
-        const node = DD.node
-        const pos = Shape.ShapeMouseDownPos
-
         if (pos.startsWith('edge')) {
           const scalePos = node.getScalePosByShapePos(pos)
           const pointerPos = node.root.getPointerPosition()
           const canvasPos = getTransformedPoint(node.ctx, pointerPos.x, pointerPos.y)
           
           const scale = node.getDragEdgeScale(pos, canvasPos)
+          console.log('>>> 123', scalePos, scale);
           node.root.scaleByPoint(node, scalePos, scale)
         }
         
         break
+      }
+
+      case EVENT.Mousedown: {
+        if (pos.startsWith('edge')) {
+          Shape.InitScale = node.scaleX
+        }
+      }
+
+      case EVENT.Mouseup: {
+        if (pos.startsWith('edge')) {
+          Shape.InitScale = 1
+        }
       }
 
       default: {
