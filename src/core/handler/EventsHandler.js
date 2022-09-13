@@ -1,5 +1,5 @@
 import { EVENT } from "../types/const";
-import { DD } from "../DragAndDrop";
+import { DD } from "./DragAndDrop";
 // import { Point } from "../point";
 import { Point2d } from "../point2d";
 import { Shape } from "../shape/shape";

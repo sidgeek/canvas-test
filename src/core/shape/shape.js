@@ -1,5 +1,5 @@
 import { Point2d } from "../point2d"
-import { DD } from "../DragAndDrop"
+import { DD } from "../handler/DragAndDrop"
 import { getTransformedPoint } from "../utils/transform"
 import { SHAPE_POS } from '../types/const'
 import mathHelper from "../utils/mathHelper"
