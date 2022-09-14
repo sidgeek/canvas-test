@@ -1,6 +1,5 @@
 import { EVENT, SHAPE_POS } from "../types/const";
 import { DD } from "./DragAndDrop";
-// import { Point } from "../point";
 import { Point2d } from "../point2d";
 import { Shape } from "../shape/shape";
 import { getTransformedPoint } from "../utils/transform";
@@ -132,34 +131,34 @@ class EventsHandler extends BaseHandler {
   afterHandleEvent = (name, event) => {
     if (!DD.isDragging) return
     const node = DD.node
-    const pos = Shape.ShapeMouseDownPos
+    const dragPosType = Shape.ShapeMouseDownPos
 
     switch (name) {
       case EVENT.MouseMove: {
         // this.handleMouseMove(event)
-        if (pos.startsWith('edge')) {
-          const scalePos = node.getScalePosByShapePos(pos)
-          const pointerPos = node.root.getPointerPosition()
-          const canvasPos = getTransformedPoint(node.ctx, pointerPos.x, pointerPos.y)
-          
-          const scale = node.getDragEdgeScale(pos, canvasPos)
+        if (dragPosType.startsWith('edge')) {
+          const scalePos = node.getScalePosByShapePos(dragPosType)
+          const pointPos = node.root.getPointerCanvasPosition()
+
+          const scale = node.getDragEdgeScale(dragPosType, pointPos)
           console.log('>>> 123', scalePos, scale);
-          node.root.scaleByPoint(node, scalePos, scale)
+          node.root.scaleByShapePos(node, dragPosType, pointPos, scale)
         }
-        
         break
       }
 
       case EVENT.Mousedown: {
-        if (pos.startsWith('edge')) {
+        if (dragPosType.startsWith('edge')) {
           Shape.InitScale = node.scaleX
         }
+        break
       }
 
       case EVENT.Mouseup: {
-        if (pos.startsWith('edge')) {
+        if (dragPosType.startsWith('edge')) {
           Shape.InitScale = 1
         }
+        break
       }
 
       default: {

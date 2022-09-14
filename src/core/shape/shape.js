@@ -1,5 +1,4 @@
 import { Point2d } from "../point2d"
-import { getTransformedPoint } from "../utils/transform"
 import { SHAPE_POS } from '../types/const'
 import mathHelper from "../utils/mathHelper"
 
@@ -13,8 +12,6 @@ export class Shape {
     this.y = y
     this.scaleX = 1
     this.scaleY = 1
-    this.translateX = 0
-    this.translateY = 0
     this.width = width
     this.height = height
 
@@ -95,10 +92,11 @@ export class Shape {
 
   scaleByPoint(){
     const ctx = this.ctx
-    // console.log('>>> 12:', this.translateX, this.translateY);
-    ctx.translate(this.translateX, this.translateY)
+    const trX = this.x
+    const trY = this.y
+    ctx.translate(trX, trY)
     ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-this.translateX, -this.translateY)
+    ctx.translate(-trX, -trY)
   }
 
   drawBoard() {
@@ -114,8 +112,10 @@ export class Shape {
     ctx.restore()
   }
 
-  getControlPoints() {
-    const { x, y, width, height } = this
+  getControlPoints(scale = 1) {
+    const { x, y, width: w, height: h } = this
+    const width = w * scale
+    const height = h * scale
     const r = 10
     const hr = r / 2
 
@@ -156,6 +156,19 @@ export class Shape {
     }
   }
 
+  updateX(v) {
+    this.x = v
+  }
+
+  updateY(v) {
+    this.y = v
+  }
+
+  updateXY(v1, v2) {
+    this.x = v1
+    this.y = v2
+  }
+
   updateIsHovering(status) {
     this.isHovering = status
     return this._id
@@ -165,11 +178,6 @@ export class Shape {
     this.scaleX = Shape.InitScale * ratio
     this.scaleY = Shape.InitScale * ratio
     console.log('>>> this.scaleX', this.scaleX);
-  }
-
-  updateTranslate(point) {
-    this.translateX = point.x
-    this.translateY = point.y
   }
 
   updateIsSelected(status) {
@@ -232,7 +240,7 @@ export class Shape {
   }
 
   isPointInControlPoint(point) {
-    const { r, points } = this.getControlPoints()
+    const { r, points } = this.getControlPoints(this.scaleX)
     // 是否在控制点上
     for (let i = 0; i < points.length; i++) {
       const p = points[i]
@@ -284,15 +292,12 @@ export class Shape {
   }
 
   _setDragPosition(elem) {
-    const pos = this.root.getPointerPosition()
-    const shapePos = Shape.ShapeMouseDownPos
-    const ctx = this.root.canvasHandler.getCtx()
-
-    if (!pos || (shapePos !== SHAPE_POS.Body)) return
-
     // 当前鼠标对应的canvas坐标
-    const canvasPos = getTransformedPoint(ctx, pos.x, pos.y)
+    const canvasPos =this.root.getPointerCanvasPosition()
+    const shapePos = Shape.ShapeMouseDownPos
 
+    if (!canvasPos || (shapePos !== SHAPE_POS.Body)) return
+    
     const moveX = canvasPos.x - elem.offset.x
     const moveY = canvasPos.y - elem.offset.y
 
