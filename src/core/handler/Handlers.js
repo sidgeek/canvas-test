@@ -49,17 +49,13 @@ class Handlers {
   }
 
   scaleByShapePos(shape, posType, pointPos, ratio) {
-    if (posType === SHAPE_POS.ETL) {
-      // 更新x, y
+    if (posType === SHAPE_POS.ETL) { // 更新x, y
       shape.updateXY(pointPos.x, pointPos.y)
-    } else if (posType === SHAPE_POS.ETR) {
-      // 更新y
+    } else if (posType === SHAPE_POS.ETR) { // 更新y
       shape.updateY(pointPos.y)
-    } else if (posType === SHAPE_POS.EBL) {
-      // 更新x
+    } else if (posType === SHAPE_POS.EBL) { // 更新x
       shape.updateX(pointPos.x)
-    } else if (posType === SHAPE_POS.EBR) {
-      // 不需要更新
+    } else if (posType === SHAPE_POS.EBR) { // 不需要更新
     }
     shape.updateScale(ratio);
     this.renderAll();

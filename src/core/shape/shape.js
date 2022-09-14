@@ -34,6 +34,11 @@ export class Shape {
   static ShapeHoverPos = SHAPE_POS.Null
   static ShapeMouseDownPos = SHAPE_POS.Null
 
+  static ScalePos = { x: 0, y: 0}
+  static DragPos = { x: 0, y: 0}
+  static ShapeDis = 0
+  static ShapeP3 = { x: 0, y: 0}
+
   static InitScale = 1
   static getId() {
     return Shape.id++
@@ -74,6 +79,21 @@ export class Shape {
     } else if (this.isHovering) {
       this.drawBoard()
     }
+  }
+
+  updateShapeMouseDownPos(pos) {
+    const {x, y, width, height} = this
+    Shape.ShapeMouseDownPos = pos
+    const scalePos = this.getScalePosByShapePos(pos)
+    const dragPos = this.getDragPosByShapePos(pos)
+    Shape.ScalePos = scalePos
+    Shape.DragPos = dragPos
+
+    Shape.ShapeDis = mathHelper.getDisOfTwoPoints(scalePos, dragPos)
+    const p1 = { x: x - width / 2, y: y + height}
+    const p2 = mathHelper.getPointToLineCuiZu(scalePos, dragPos, p1)
+    const p3 = {x: p1.x - (p2.x - scalePos.x), y: p1.y - (p2.y - scalePos.y)}
+    Shape.ShapeP3 = p3
   }
 
   scaleByCenter(){
@@ -205,38 +225,31 @@ export class Shape {
     }
   }
 
-  getDragEdgeScale(shapePos, currentPointerPos) {
+  getDragPosByShapePos(shapePos) {
     const { x, y, width, height } = this
-    const scalePos = this.getScalePosByShapePos(shapePos)
-    let dragPos, oldDis
-   
     switch (shapePos) {
-      case SHAPE_POS.ETL: { 
-        dragPos = { x, y }
-        break
-      }
-      case SHAPE_POS.ETR: {
-        dragPos = { x: x + width, y }
-        break
-      }
-      case SHAPE_POS.EBR: { 
-        dragPos = { x: x + width, y: y+ height }
-        break
-       }
-      case SHAPE_POS.EBL: { 
-        dragPos = { x: x + width, y}
-        break
-      } 
-      default: {dragPos =  { x, y }}
+      case SHAPE_POS.ETL: return { x, y }
+      case SHAPE_POS.ETR: return { x: x + width, y }
+      case SHAPE_POS.EBR: return { x: x + width, y: y + height }
+      case SHAPE_POS.EBL: return { x, y: y + height }
+      default: return { x: 0, y: 0 }
     }
+  }
 
-    const p1 = { x: x - width / 2, y: y + height}
-    const p2 = mathHelper.getPointToLineCuiZu(scalePos, dragPos, p1)
-    const p3 = {x: p1.x - (p2.x - scalePos.x), y: p1.y - (p2.y - scalePos.y)}
-    oldDis = mathHelper.getDisOfTwoPoints(scalePos, dragPos)
+
+  getDragEdgeScale(currentPointerPos) {
+    const scalePos = Shape.ScalePos
+    const dragPos = Shape.DragPos
+    const oldDis = Shape.ShapeDis
+    const p3 = Shape.ShapeP3
+
     const newDis = mathHelper.getPointToLineDis(scalePos, p3, currentPointerPos)
+    const cuiZuPos = mathHelper.getPointToLineCuiZu(scalePos, dragPos, currentPointerPos)
     const ratio = newDis / oldDis
-    return ratio
+
+    console.log('>>> p3', p3, scalePos, ratio);
+
+    return { ratio, cuiZuPos }
   }
 
   isPointInControlPoint(point) {
