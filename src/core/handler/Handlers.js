@@ -1,7 +1,6 @@
 import { SHAPE_POS } from "../types/const";
 import { getTransformedPoint } from "../utils/transform";
 import CanvasHandler from "./CanvasHandler";
-import DragHandler from "./DragHandler";
 import EventsHandler from "./EventsHandler";
 import ZoomHandler from "./ZoomHandler";
 
@@ -18,7 +17,6 @@ class Handlers {
     this.changedPointerPos = null;
 
     this.canvasHandler = new CanvasHandler(handlerOptions);
-    this.dragHandler = new DragHandler(handlerOptions);
     this.eventsHandler = new EventsHandler(handlerOptions);
     this.zoomHandler = new ZoomHandler(handlerOptions);
   }

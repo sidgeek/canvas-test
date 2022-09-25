@@ -1,16 +1,5 @@
 import { createContext, useState } from 'react'
 
-// export interface IEditorContext {
-//   canvas: fabric.Canvas | null
-//   setCanvas: (canvas: fabric.Canvas) => void
-//   activeObject: fabric.Object | null
-//   setActiveObject: (object: fabric.Object | null) => void
-//   handlers: Handlers | null
-//   setHandlers: (handlers: Handlers) => void
-//   zoomRatio: number
-//   setZoomRatio: (value: number) => void
-// }
-
 export const EditorContext = createContext({
   canvas: null,
   setCanvas: () => {},

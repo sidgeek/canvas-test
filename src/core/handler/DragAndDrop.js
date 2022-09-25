@@ -19,16 +19,6 @@ export const DD = {
     });
     return node;
   },
-  /**
-   *  number,
-    {
-      node: Node;
-      startPointerPos: Vector2d;
-      offset: Vector2d;
-      pointerId?: number;
-      dragStatus: 'ready' | 'dragging' | 'stopped';
-    }
-   */
   _dragElements: new Map(),
 
   // drag & drop
@@ -102,17 +92,7 @@ export const DD = {
         DD.justDragged = true;
         elem.dragStatus = 'stopped';
       }
-
-      // if (drawNode && drawNodes.indexOf(drawNode) === -1) {
-      //   drawNodes.push(drawNode);
-      // }
     });
-    // // render in a sync way
-    // // because mousemove event may trigger BEFORE batch render is called
-    // // but as we have not hit canvas updated yet, it will trigger incorrect mouseover/mouseout events
-    // drawNodes.forEach((drawNode) => {
-    //   drawNode.render();
-    // });
   },
   _endDragAfter(evt) {
     DD._dragElements.forEach((elem, key) => {
