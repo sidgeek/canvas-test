@@ -1,4 +1,4 @@
-import { Point } from "../point";
+import { Point2d } from "../point2d";
 import { invertTransform, transformPoint } from "../utils/matrix";
 import BaseHandler from "./BaseHandler";
 
@@ -16,37 +16,22 @@ class ZoomHandler extends BaseHandler {
     let zoomRatio = this.canvas.getZoom()
     zoomRatio += 0.05
     const center = this.canvas.getCenter()
-    // this.zoomToPoint(new fabric.Point(center.left, center.top), zoomRatio)
-    // this.context.setZoomRatio(zoomRatio)
   }
 
   zoomOut() {
     let zoomRatio = this.canvas.getZoom()
     zoomRatio -= 0.05
-    // const center = this.canvas.getCenter()
-    // this.zoomToPoint(new fabric.Point(center.left, center.top), zoomRatio)
-    // this.context.setZoomRatio(zoomRatio)
   }
 
   zoomToOne() {
     const center = this.canvas.getCenter()
     this.canvas.setViewportTransform([1, 0, 0, 1, 0, 0])
-    this.zoomToPoint(Point(center.left, center.top), 1)
-    // this.context.setZoomRatio(1)
-  }
-
-  zoomToFit() {
-    // const zoomFitRatio = this.root.frameHandler.getFitRatio()
-    // const center = this.canvas.getCenter()
-    // this.canvas.setViewportTransform([1, 0, 0, 1, 0, 0])
-    // this.zoomToPoint(new fabric.Point(center.left, center.top), zoomFitRatio)
-    // this.context.setZoomRatio(zoomFitRatio)
+    this.zoomToPoint(Point2d(center.left, center.top), 1)
   }
 
   zoomToRatio(zoomRatio) {
     const center = this.canvas.getCenter()
-    this.zoomToPoint(Point(center.left, center.top), zoomRatio)
-    // this.context.setZoomRatio(zoomRatio)
+    this.zoomToPoint(Point2d(center.left, center.top), zoomRatio)
   }
 
   zoomToPoint(point, zoom) {

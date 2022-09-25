@@ -2,19 +2,19 @@ import { cos } from "./cos";
 import { sin } from "./sin";
 import { degreesToRadians } from "./radiansDegreesConversion";
 import { iMatrix, PiBy180 } from "../types/const";
-import { Point } from "../point";
+import { Point2d } from "../point2d";
 
 
 /**
  * Apply transform t to point p
  * @static
  * @memberOf fabric.util
- * @param  {Point | IPoint} p The point to transform
+ * @param  {Point2d | IPoint} p The point to transform
  * @param  {Array} t The transform
  * @param  {Boolean} [ignoreOffset] Indicates that the offset should not be applied
- * @return {Point} The transformed point
+ * @return {Point2d} The transformed point
  */
-export const transformPoint = (p, t, ignoreOffset) => new Point(p.x, p.y).transform(t, ignoreOffset);
+export const transformPoint = (p, t, ignoreOffset) => new Point2d(p.x, p.y).transform(t, ignoreOffset);
 
 /**
  * Invert transformation t
@@ -26,7 +26,7 @@ export const transformPoint = (p, t, ignoreOffset) => new Point(p.x, p.y).transf
 export const invertTransform = (t) => {
   const a = 1 / (t[0] * t[3] - t[1] * t[2]),
         r = [a * t[3], -a * t[1], -a * t[2], a * t[0], 0, 0],
-        { x, y } = transformPoint(new Point(t[4], t[5]), r, true);
+        { x, y } = transformPoint(new Point2d(t[4], t[5]), r, true);
   r[4] = -x;
   r[5] = -y;
   return r;

@@ -96,13 +96,6 @@ export class Shape {
     Shape.ShapeP3 = p3
   }
 
-  scaleByCenter(){
-    const ctx = this.ctx
-    ctx.translate(this.center.x, this.center.y)
-    ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-this.center.x, -this.center.y)
-  }
-
   scaleByTopLeft(){
     const ctx = this.ctx
     ctx.translate(this.topLeft.x, this.topLeft.y)

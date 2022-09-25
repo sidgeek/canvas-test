@@ -1,10 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
-// import { Mousedown } from './core/const';
 import { Circle } from './core/shape/circle';
-// import { Point2d } from './core/point2d';
-// import { Polygon } from './core/polygon';
 import { Rect } from './core/shape/rect';
 import Handlers from './core/handler'
 import { EditorContext } from "./core/context"
@@ -20,45 +17,7 @@ function App() {
 
     context.setHandlers(handlers)
     context.setCanvas(canvas)
-
-    // const points = []
-    // for (let i = 0; i < 5; i++) {
-    //   points.push(Point2d.random(800, 600))
-    // }
-    // const shape = new Polygon({
-    //   x: points[0].x,
-    //   y: points[0].y,
-    //   points,
-    //   fillColor: 'orange',
-    // })
-
-    // 添加到画布中
-    // canvas.add(shape)
-
-    // const handleCircleClick = (event) => {
-    //   event.isStopBubble = true
-    //   // console.log(event, 'circle')
-    // }
-
-    // const handleRectClick = (event) => {
-    //   event.isStopBubble = true
-    //   // console.log(event, 'rect')
-    // }
-
-    // const handlePolygonClick = (event) => {
-    //   event.isStopBubble = true
-    //   // console.log(event, 'polygon')
-    // }
-
-    // circle.on(Mousedown, handleCircleClick)
-    // rect.on(Mousedown, handleRectClick)
-    // shape.on(Mousedown, handlePolygonClick)
-
-    return () => {
-      // circle.off(Mousedown, handleCircleClick)
-      // rect.off(Mousedown, handleRectClick)
-      // shape.off(Mousedown, handlePolygonClick)
-    }
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

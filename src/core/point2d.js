@@ -70,6 +70,13 @@ export class Point2d {
     return this
   }
 
+  transform(t, ignoreOffset = false) {
+    return new Point2d(
+      t[0] * this.x + t[2] * this.y + (ignoreOffset ? 0 : t[4]),
+      t[1] * this.x + t[3] * this.y + (ignoreOffset ? 0 : t[5])
+    );
+  }
+
   distance(p) {
     const [x, y] = this.clone().sub(p).abs()
     return x * x + y * y
