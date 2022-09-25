@@ -35,4 +35,47 @@ export class Util {
 
         return new Point(rx, ry).addEquals(origin);
     }
+    static pointerX(event) {
+        return event.clientX || 0;
+    }
+    static pointerY(event) {
+        return event.clientY || 0;
+    }
+    /** 获取元素位置 */
+    static getElementPosition(element) {
+        return window.getComputedStyle(element, null).position;
+    }
+    /** 获取鼠标的点击坐标，相对于页面左上角，注意不是画布的左上角，到时候会减掉 offset */
+    static getPointer(event, upperCanvasEl) {
+        event || (event = window.event);
+
+        let element = event.target,
+            body = document.body || { scrollLeft: 0, scrollTop: 0 },
+            docElement = document.documentElement,
+            orgElement = element,
+            scrollLeft = 0,
+            scrollTop = 0,
+            firstFixedAncestor;
+
+        while (element && element.parentNode && !firstFixedAncestor) {
+            element = element.parentNode;
+            if (element !== document && Util.getElementPosition(element) === 'fixed') firstFixedAncestor = element;
+
+            if (element !== document && orgElement !== upperCanvasEl && Util.getElementPosition(element) === 'absolute') {
+                scrollLeft = 0;
+                scrollTop = 0;
+            } else if (element === document && orgElement !== upperCanvasEl) {
+                scrollLeft = body.scrollLeft || docElement.scrollLeft || 0;
+                scrollTop = body.scrollTop || docElement.scrollTop || 0;
+            } else {
+                scrollLeft += (element).scrollLeft || 0;
+                scrollTop += (element).scrollTop || 0;
+            }
+        }
+
+        return {
+            x: Util.pointerX(event) + scrollLeft,
+            y: Util.pointerY(event) + scrollTop,
+        };
+    }
 }

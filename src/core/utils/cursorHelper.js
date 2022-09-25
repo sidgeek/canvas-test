@@ -13,6 +13,17 @@ const ShapePos_Cursor_Map = new Map([
   [SHAPE_POS.ER, CURSOR.E],
 ])
 
+export const cursorMap = {
+  tr: 'ne-resize',
+  br: 'se-resize',
+  bl: 'sw-resize',
+  tl: 'nw-resize',
+  ml: 'w-resize',
+  mt: 'n-resize',
+  mr: 'e-resize',
+  mb: 's-resize',
+};
+
 export const getShapePosCursor = (pos) => {
   return ShapePos_Cursor_Map.get(pos)
 }

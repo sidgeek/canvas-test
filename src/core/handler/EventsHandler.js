@@ -186,6 +186,8 @@ class EventsHandler extends BaseHandler {
     mousePos.innerText = `Original X: ${event.offsetX}, Y: ${event.offsetY}`;
     transformedMousePos.innerText = `Transformed X: ${currentTransformedCursor.x}, Y: ${currentTransformedCursor.y}`;
 
+    this.root.canvasHandler.__onMouseMove(event)
+
     if (DD.isDragging) {
       event.preventDefault();
     } else if (isDragging){
