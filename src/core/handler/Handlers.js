@@ -2,7 +2,6 @@ import { SHAPE_POS } from "../types/const";
 import { getTransformedPoint } from "../utils/transform";
 import CanvasHandler from "./CanvasHandler";
 import EventsHandler from "./EventsHandler";
-import ZoomHandler from "./ZoomHandler";
 
 class Handlers {
   constructor(props) {
@@ -18,7 +17,6 @@ class Handlers {
 
     this.canvasHandler = new CanvasHandler(handlerOptions);
     this.eventsHandler = new EventsHandler(handlerOptions);
-    this.zoomHandler = new ZoomHandler(handlerOptions);
   }
 
   setPointerPosition(point) {
