@@ -39,12 +39,6 @@ export class Shape {
   static ShapeHoverPos = SHAPE_POS.Null
   static ShapeMouseDownPos = SHAPE_POS.Null
 
-  static ScalePos = { x: 0, y: 0}
-  static DragPos = { x: 0, y: 0}
-  static ShapeDis = 0
-  static ShapeP3 = { x: 0, y: 0}
-
-  static InitScale = 1
   static getId() {
     return Shape.id++
   }
@@ -136,21 +130,6 @@ export class Shape {
     }
 
     ctx.restore();
-  }
-
-  updateShapeMouseDownPos(pos) {
-    const {x, y, width, height} = this
-    Shape.ShapeMouseDownPos = pos
-    const scalePos = this.getScalePosByShapePos(pos)
-    const dragPos = this.getDragPosByShapePos(pos)
-    Shape.ScalePos = scalePos
-    Shape.DragPos = dragPos
-
-    Shape.ShapeDis = mathHelper.getDisOfTwoPoints(scalePos, dragPos)
-    const p1 = { x: x - width / 2, y: y + height}
-    const p2 = mathHelper.getPointToLineCuiZu(scalePos, dragPos, p1)
-    const p3 = {x: p1.x - (p2.x - scalePos.x), y: p1.y - (p2.y - scalePos.y)}
-    Shape.ShapeP3 = p3
   }
 
   scaleByTopLeft(){
@@ -245,8 +224,6 @@ export class Shape {
   }
 
   updateScale(ratio) {
-    this.scaleX = Shape.InitScale * ratio
-    this.scaleY = Shape.InitScale * ratio
     console.log('>>> this.scaleX', this.scaleX);
   }
 
@@ -284,22 +261,6 @@ export class Shape {
       case SHAPE_POS.EBL: return { x, y: y + height }
       default: return { x: 0, y: 0 }
     }
-  }
-
-
-  getDragEdgeScale(currentPointerPos) {
-    const scalePos = Shape.ScalePos
-    const dragPos = Shape.DragPos
-    const oldDis = Shape.ShapeDis
-    const p3 = Shape.ShapeP3
-
-    const newDis = mathHelper.getPointToLineDis(scalePos, p3, currentPointerPos)
-    const cuiZuPos = mathHelper.getPointToLineCuiZu(scalePos, dragPos, currentPointerPos)
-    const ratio = newDis / oldDis
-
-    console.log('>>> p3', p3, scalePos, ratio);
-
-    return { ratio, cuiZuPos }
   }
 
   isPointInControlPoint(point) {

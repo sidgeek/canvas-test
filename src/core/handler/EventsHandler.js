@@ -137,26 +137,18 @@ class EventsHandler extends BaseHandler {
       case EVENT.MouseMove: {
         // this.handleMouseMove(event)
         if (dragPosType.startsWith('edge')) {
-          const scalePos = Shape.ScalePos
-          const pointPos = node.root.getPointerCanvasPosition()
-
-          const { ratio, cuiZuPos } = node.getDragEdgeScale(pointPos)
-          console.log('>>> 123', scalePos, ratio, cuiZuPos);
-          node.root.scaleByShapePos(node, dragPosType, cuiZuPos, ratio)
         }
         break
       }
 
       case EVENT.Mousedown: {
         if (dragPosType.startsWith('edge')) {
-          Shape.InitScale = node.scaleX
         }
         break
       }
 
       case EVENT.Mouseup: {
         if (dragPosType.startsWith('edge')) {
-          Shape.InitScale = 1
         }
         break
       }
@@ -172,12 +164,7 @@ class EventsHandler extends BaseHandler {
     this.root.setPointerPosition(event.point)
 
     const matchedShape = this.getMatchedShape(event)
-    // console.log(".. M", matchedShape);
-    // const lastShapes = Shape.getLastSelectedShapes()
     if (matchedShape) {
-      Shape.addLastSelectedShapes(matchedShape)
-      matchedShape.updateShapeMouseDownPos(Shape.ShapeHoverPos)
-      matchedShape.updateIsSelected(true)
     } else {
       Shape.cleanLastSelectedShapes()
     }
@@ -186,7 +173,6 @@ class EventsHandler extends BaseHandler {
   handleMouseUp(event) {
     const matchedShape = this.getMatchedShape(event)
     if (matchedShape) {
-      matchedShape.updateShapeMouseDownPos(Shape.Null)
     }
 
     isDragging = false
