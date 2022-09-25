@@ -217,33 +217,33 @@ class EventsHandler extends BaseHandler {
 
 
   handlePan = event => {
-    const delta = event.deltaY
-    const deltaX = event.deltaX
-    const isShiftKey = event.shiftKey
-    let pointX = 0
-    let pointY = delta > 0 ? -30 : 30
+    // const delta = event.deltaY
+    // const deltaX = event.deltaX
+    // const isShiftKey = event.shiftKey
+    // let pointX = 0
+    // let pointY = delta > 0 ? -30 : 30
 
-    if (isShiftKey) {
-      pointY = 0
-      pointX = deltaX > 0 ? -30 : 30
-    }
+    // if (isShiftKey) {
+    //   pointY = 0
+    //   pointX = deltaX > 0 ? -30 : 30
+    // }
 
-    const context = this.canvas.getCtx()
-    context.translate(pointX, pointY);
-    this.root.renderAll()
+    // const context = this.canvas.getCtx()
+    // context.translate(pointX, pointY);
+    // this.root.renderAll()
   }
 
   handleZoom = evt => {
-    const zoom = evt.deltaY < 0 ? 1.1 : 0.9;
-    const context = this.canvas.getCtx()
+    // const zoom = evt.deltaY < 0 ? 1.1 : 0.9;
+    // const context = this.canvas.getCtx()
 
-    context.translate(currentTransformedCursor.x, currentTransformedCursor.y);
-    context.scale(zoom, zoom);
-    context.translate(-currentTransformedCursor.x, -currentTransformedCursor.y);
+    // context.translate(currentTransformedCursor.x, currentTransformedCursor.y);
+    // context.scale(zoom, zoom);
+    // context.translate(-currentTransformedCursor.x, -currentTransformedCursor.y);
     
-    this.root.renderAll()
-    evt.preventDefault()
-    evt.stopPropagation()
+    // this.root.renderAll()
+    // evt.preventDefault()
+    // evt.stopPropagation()
   }
 }
 
