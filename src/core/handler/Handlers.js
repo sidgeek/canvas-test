@@ -59,8 +59,10 @@ class Handlers {
 
   renderAll() {
     this.canvasHandler.clean();
+    const ctx = this.canvasHandler.getCtx()
+    if (!ctx) return
     this.allShapes.forEach((s) => {
-      s.render();
+      s.render(ctx);
     });
   }
 

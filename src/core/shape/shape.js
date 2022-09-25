@@ -1,17 +1,22 @@
-import { Point2d } from "../point2d"
+import { Point } from "../point2d"
 import { SHAPE_POS } from '../types/const'
 import mathHelper from "../utils/mathHelper"
+import { Util } from "../utils/Util"
 
 // 图形的基类
 export class Shape {
   constructor(props) {
-    const { canvas, x, y, width, height } = props
+    const { canvas, left, top, width, height } = props
     this._id = Shape.getId()
     this.ctx = canvas.ctx
-    this.x = x
-    this.y = y
+    this.left = left
+    this.top = top
     this.scaleX = 1
     this.scaleY = 1
+    this.flipX = false
+    this.flipY = false
+    this.originX = 'center'
+    this.originY = 'center'
     this.width = width
     this.height = height
 
@@ -70,7 +75,57 @@ export class Shape {
     return Shape.LastSelectedShapes
   }
 
-  render() {
+  /** 获取物体中心点 */
+  getCenterPoint() {
+    return this.translateToCenterPoint(new Point(this.left, this.top), this.originX, this.originY);
+  }
+
+  /** 将中心点移到变换基点 */
+  translateToCenterPoint(point, originX, originY) {
+    let cx = point.x,
+        cy = point.y;
+
+    if (originX === 'left') {
+        cx = point.x + this.getWidth() / 2;
+    } else if (originX === 'right') {
+        cx = point.x - this.getWidth() / 2;
+    }
+
+    if (originY === 'top') {
+        cy = point.y + this.getHeight() / 2;
+    } else if (originY === 'bottom') {
+        cy = point.y - this.getHeight() / 2;
+    }
+    const p = new Point(cx, cy);
+    if (this.angle) {
+        return Util.rotatePoint(p, point, Util.degreesToRadians(this.angle));
+    } else {
+        return p;
+    }
+  }
+
+  /** 绘制前需要进行各种变换（包括平移、旋转、缩放）
+   * 注意变换顺序很重要，顺序不一样会导致不一样的结果，所以一个框架一旦定下来了，后面大概率是不能更改的
+   * 我们采用的顺序是：平移 -> 旋转 -> 缩放，这样可以减少些计算量，如果我们先旋转，点的坐标值一般就不是整数，那么后面的变换基于非整数来计算
+   */
+  transform(ctx) {
+      let center = this.getCenterPoint();
+      ctx.translate(center.x, center.y);
+      ctx.rotate(Util.degreesToRadians(this.angle));
+      ctx.scale(this.scaleX * (this.flipX ? -1 : 1), this.scaleY * (this.flipY ? -1 : 1));
+  }
+
+  render(ctx, noTransform) {
+    ctx.save()
+
+    if (!noTransform) {
+      this.transform(ctx);
+    }
+
+    // 绘制物体
+    this._render(ctx)
+
+
     if (this.isHovering && this.isSelected) {
       this.drawBoard()
       this.drawControls()
@@ -79,6 +134,8 @@ export class Shape {
     } else if (this.isHovering) {
       this.drawBoard()
     }
+
+    ctx.restore();
   }
 
   updateShapeMouseDownPos(pos) {
@@ -323,7 +380,7 @@ export class Shape {
 
 
   getMouse(evt) {
-    return new Point2d(evt.offsetX, evt.offsetY)
+    return new Point(evt.offsetX, evt.offsetY)
   }
 
   addRoot(root) {

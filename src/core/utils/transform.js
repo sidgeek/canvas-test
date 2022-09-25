@@ -1,4 +1,4 @@
-import { Point2d } from "../point2d";
+import { Point } from "../point2d";
 
 export function getTransformedPoint(context, x, y) {
   const transform = context.getTransform();
@@ -6,7 +6,7 @@ export function getTransformedPoint(context, x, y) {
   
   const transformedX = inverseZoom * x - inverseZoom * transform.e;
   const transformedY = inverseZoom * y - inverseZoom * transform.f;
-  return new Point2d(transformedX, transformedY);
+  return new Point(transformedX, transformedY);
 }
 
 

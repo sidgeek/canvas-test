@@ -1,4 +1,4 @@
-import { Point2d } from "./point2d"
+import { Point } from "./point2d"
 
 export class Canvas {
   constructor() {
@@ -29,7 +29,7 @@ export class Canvas {
   }
 
   getCenterPoint() {
-    return new Point2d(this.height / 2, this.width / 2)
+    return new Point(this.height / 2, this.width / 2)
   }
 
 

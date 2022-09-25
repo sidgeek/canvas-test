@@ -1,6 +1,6 @@
 import { EVENT, SHAPE_POS } from "../types/const";
 import { DD } from "./DragAndDrop";
-import { Point2d } from "../point2d";
+import { Point } from "../point2d";
 import { Shape } from "../shape/shape";
 import { getTransformedPoint } from "../utils/transform";
 import BaseHandler from "./BaseHandler";
@@ -27,7 +27,7 @@ class EventsHandler extends BaseHandler {
   }
 
   getNewEvent(event) {
-    const point = new Point2d(event.offsetX, event.offsetY)
+    const point = new Point(event.offsetX, event.offsetY)
     event.point = point
     event.isStopBubble = false
     return event

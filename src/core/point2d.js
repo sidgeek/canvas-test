@@ -1,13 +1,13 @@
 let current = 0
 const pointMap = []
-export class Point2d {
+export class Point {
   constructor(x, y) {
     this.x = x || 0
     this.y = y || 0
     this.id = ++current
   }
   clone() {
-    return new Point2d(this.x, this.y)
+    return new Point(this.x, this.y)
   }
 
   equal(v) {
@@ -71,7 +71,7 @@ export class Point2d {
   }
 
   transform(t, ignoreOffset = false) {
-    return new Point2d(
+    return new Point(
       t[0] * this.x + t[2] * this.y + (ignoreOffset ? 0 : t[4]),
       t[1] * this.x + t[3] * this.y + (ignoreOffset ? 0 : t[5])
     );
@@ -88,7 +88,7 @@ export class Point2d {
   }
 
   static random(width, height) {
-    return new Point2d(Math.random() * width, Math.random() * height)
+    return new Point(Math.random() * width, Math.random() * height)
   }
 
   cross(v) {

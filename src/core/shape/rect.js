@@ -4,20 +4,17 @@ import { Shape } from "./shape"
 export class Rect extends Shape {
   constructor(props) {
     super(props)
-    const { width, height, fillColor = 'black' } = props
-    this.width = width
-    this.height = height
+    const { fillColor = 'black' } = props
     this.fillColor = fillColor
   }
-  render() {
-    const ctx = this.ctx
-    const { x, y, width, height, fillColor } = this
-    ctx.save()
-    super.scaleByPoint()
+  _render(ctx) {
+    const { width, height, fillColor } = this
+    const x = - 2 / width
+    const y = - 2 / height
+
+    ctx.beginPath();
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, width, height)
-    ctx.restore()
-    super.render();
   }
 
   // 判断鼠标的点是否在图形内部
