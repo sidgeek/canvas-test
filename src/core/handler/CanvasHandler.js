@@ -8,6 +8,10 @@ class CanvasHandler extends BaseHandler {
     this.initialize()
 
     this._offset = { left: 0, top: 0 }
+    this.hoverCursor = 'move';
+    this.defaultCursor = 'default'
+    this.moveCursor = 'move'
+    this.rotationCursor = 'crosshair'
   }
 
   initialize() {
@@ -101,7 +105,7 @@ class CanvasHandler extends BaseHandler {
           // 如果是 hover 事件，这里我们只需要改变鼠标样式，并不会重新渲染
           let style = this.getCanvasEle().style;
           target = this.findTarget(e);
-          console.log('>>> target', target);
+          // console.log('>>> target', target);
 
           if (target) {
               this._setCursorFromEvent(e, target);
