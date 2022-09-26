@@ -6,6 +6,8 @@ class CanvasHandler extends BaseHandler {
   constructor(props) {
     super(props)
     this.initialize()
+
+    this._offset = { left: 0, top: 0 }
   }
 
   initialize() {
@@ -58,9 +60,9 @@ class CanvasHandler extends BaseHandler {
         x = xy.x,
         y = xy.y;
 
-    console.log('>>> x, y:', x, y)
+    console.log('>>> oCoords:', target.oCoords)
     // 等待去除
-    // // we iterate through each object. If target found, return it.
+    // we iterate through each object. If target found, return it.
     // let iLines = target._getImageLines(target.oCoords),
     //     xpoints = target._findCrossPoints(x, y, iLines);
 
@@ -78,9 +80,9 @@ class CanvasHandler extends BaseHandler {
 
     // 遍历所有物体，判断鼠标点是否在物体包围盒内
     const shapes = this.root.getAllShapes()
-    for (let i = this.shapes.length; i--; ) {
-        if (this.shapes[i] && this.containsPoint(e, this.shapes[i])) {
-            target = this.shapes[i];
+    for (let i = shapes.length; i--; ) {
+        if (shapes[i] && this.containsPoint(e, shapes[i])) {
+            target = shapes[i];
             break;
         }
     }

@@ -35,6 +35,8 @@ class Handlers {
 
   add(shape) {
     shape.addRoot(this);
+    debugger
+    shape.setCoords()
     this.allShapes.push(shape);
     this.renderAll();
   }
