@@ -36,10 +36,11 @@ export class Util {
         return new Point(rx, ry).addEquals(origin);
     }
     static pointerX(event) {
-        return event.clientX || 0;
+        // event.offsetX
+        return event.offsetX || 0;
     }
     static pointerY(event) {
-        return event.clientY || 0;
+        return event.offsetY || 0;
     }
     /** 获取元素位置 */
     static getElementPosition(element) {
@@ -47,6 +48,7 @@ export class Util {
     }
     /** 获取鼠标的点击坐标，相对于页面左上角，注意不是画布的左上角，到时候会减掉 offset */
     static getPointer(event, upperCanvasEl) {
+        debugger
         event || (event = window.event);
 
         let element = event.target,

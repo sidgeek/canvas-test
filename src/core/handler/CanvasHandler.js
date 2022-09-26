@@ -60,19 +60,20 @@ class CanvasHandler extends BaseHandler {
         x = xy.x,
         y = xy.y;
 
-    console.log('>>> oCoords:', target.oCoords)
     // 等待去除
     // we iterate through each object. If target found, return it.
-    // let iLines = target._getImageLines(target.oCoords),
-    //     xpoints = target._findCrossPoints(x, y, iLines);
-
+    // debugger
+    let iLines = target._getImageLines(target.oCoords),
+        xpoints = target._findCrossPoints(x, y, iLines);
+    
     // // if xcount is odd then we clicked inside the object
     // // For the specific case of square images xcount === 1 in all true cases
-    // if ((xpoints && xpoints % 2 === 1) || target._findTargetCorner(e, this._offset)) {
-    //     return true;
-    // }
+    if ((xpoints && xpoints % 2 === 1) || target._findTargetCorner(e, this._offset)) {
+        return true;
+    }
     return false;
   }
+
 
   /** 检测是否有物体在鼠标位置 */
   findTarget(e) {
@@ -100,6 +101,7 @@ class CanvasHandler extends BaseHandler {
           // 如果是 hover 事件，这里我们只需要改变鼠标样式，并不会重新渲染
           let style = this.getCanvasEle().style;
           target = this.findTarget(e);
+          console.log('>>> target', target);
 
           if (target) {
               this._setCursorFromEvent(e, target);
