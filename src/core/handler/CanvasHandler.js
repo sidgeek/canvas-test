@@ -95,6 +95,144 @@ class CanvasHandler extends BaseHandler {
     if (target) return target;
   }
 
+  _shouldClearSelection() { return false }
+
+  __onMouseUp(e) {
+    var target;
+
+    // if (this.isDrawingMode && this._isCurrentlyDrawing) {
+    //   this.freeDrawing._finalizeAndAddPath();
+    //   this.fire('mouse:up', { e: e });
+    //   return;
+    // }
+
+    if (this._currentTransform) {
+        var transform = this._currentTransform;
+
+        target = transform.target;
+        if (target._scaling) {
+            target._scaling = false;
+        }
+
+        // determine the new coords everytime the image changes its position
+        var i = this._objects.length;
+        while (i--) {
+            this._objects[i].setCoords();
+        }
+
+        target.isMoving = false;
+
+        // only fire :modified event if target coordinates were changed during mousedown-mouseup
+        if (this.stateful && target.hasStateChanged()) {
+            this.fire('object:modified', { target: target });
+            target.fire('modified');
+        }
+
+        if (this._previousOriginX) {
+            this._currentTransform.target.adjustPosition(this._previousOriginX);
+            this._previousOriginX = null;
+        }
+    }
+
+    this._currentTransform = null;
+
+    if (this._groupSelector) {
+        // group selection was completed, determine its bounds
+        this._findSelectedObjects(e);
+    }
+    var activeGroup = this.getActiveGroup();
+    if (activeGroup) {
+        activeGroup.setObjectsCoords();
+        activeGroup.set('isMoving', false);
+        this._setCursor(this.defaultCursor);
+    }
+
+    // clear selection
+    this._groupSelector = null;
+    this.renderAll();
+
+    this._setCursorFromEvent(e, target);
+
+    // fix for FF
+    this._setCursor('');
+
+    var _this = this;
+    setTimeout(function () {
+        _this._setCursorFromEvent(e, target);
+    }, 50);
+
+    if (target) {
+        const { top, left, currentWidth, currentHeight, width, height, angle, scaleX, scaleY, originX, originY } = target;
+        const obj = {
+            top,
+            left,
+            currentWidth,
+            currentHeight,
+            width,
+            height,
+            angle,
+            scaleX,
+            scaleY,
+            originX,
+            originY,
+        };
+        console.log(JSON.stringify(obj, null, 4));
+    }
+    this.fire('mouse:up', { target, e });
+    target && target.fire('mouseup', { e });
+  }
+
+  __onMouseDown(e) {
+    let pointer;
+    // 只处理左键点击
+    let isLeftClick = 'which' in e ? e.which === 1 : e.button === 1;
+    if (!isLeftClick) return;
+    // ignore if some object is being transformed at this moment
+    if (this._currentTransform) return;
+
+    let target = this.findTarget(e),
+        corner;
+    pointer = this.getPointer(e);
+
+    if (this._shouldClearSelection(e)) {
+        this._groupSelector = {
+            ex: pointer.x,
+            ey: pointer.y,
+            top: 0,
+            left: 0,
+        };
+        // this.deactivateAllWithDispatch();
+    } else {
+        // 如果是拖拽或旋转
+        // this.stateful && target.saveState();
+
+        // if ((corner = target._findTargetCorner(e, this._offset))) {
+        //     this.onBeforeScaleRotate(target);
+        // }
+        // if (this._shouldHandleGroupLogic(e, target)) {
+        //     this._handleGroupLogic(e, target);
+        //     target = this.getActiveGroup();
+        // } else {
+        //     if (target !== this.getActiveGroup()) {
+        //         this.deactivateAll();
+        //     }
+        //     this.setActiveObject(target, e);
+        // }
+
+        // this._setupCurrentTransform(e, target);
+    }
+    // 我们必须重新渲染把当前激活的物体置于上层画布
+    // this.renderAll();
+
+    // if (corner === 'mtr') {
+    //     // 如果点击的是上方的控制点，也就是旋转操作
+    //     this._previousOriginX = this._currentTransform.target.originX;
+    //     this._currentTransform.target.adjustPosition('center');
+    //     this._currentTransform.left = this._currentTransform.target.left;
+    //     this._currentTransform.top = this._currentTransform.target.top;
+    // }
+  }
+
   /** 处理鼠标 hover 事件和物体变换时的拖拽事件
    * 如果是涂鸦模式，只绘制 upper-canvas
    * 如果是图片变换，只绘制 upper-canvas */
