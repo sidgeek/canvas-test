@@ -179,6 +179,8 @@ class EventsHandler extends BaseHandler {
 
     isDragging = false
     this.root.setPointerPosition(null)
+
+    this.root.canvasHandler.__onMouseUp(event)
   }
 
   handleMouseMove(event) {

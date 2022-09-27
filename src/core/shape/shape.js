@@ -770,6 +770,21 @@ export class Shape {
     return this
   }
 
+  get(key) {
+    return this[key];
+  }
+  set(key, value) {
+    if (key === 'scaleX' && value < 0) {
+        this.flipX = !this.flipX;
+        value *= -1;
+    } else if (key === 'scaleY' && value < 0) {
+        this.flipY = !this.flipY;
+        value *= -1;
+    }
+    this[key] = value;
+    return this;
+  }
+
   get center() {
     return { x: this.x + this.width / 2, y: this.y + this.height / 2 };
   }

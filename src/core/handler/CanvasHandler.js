@@ -93,7 +93,6 @@ class CanvasHandler extends BaseHandler {
     const shapes = this.root.getAllShapes()
     for (let i = shapes.length; i--; ) {
         if (shapes[i] && this.containsPoint(e, shapes[i])) {
-          console.log('>>>> isIn');
             target = shapes[i];
             break;
         }
@@ -227,7 +226,6 @@ class CanvasHandler extends BaseHandler {
         //     left: 0,
         // };
         this.deactivateAllWithDispatch();
-        this.root.renderAll();
     } else {
         // 如果是拖拽或旋转
         this.stateful && target.saveState();
@@ -246,10 +244,10 @@ class CanvasHandler extends BaseHandler {
             this.setActiveObject(target, e);
         }
 
-        // this._setupCurrentTransform(e, target);
+        this._setupCurrentTransform(e, target);
     }
     // 我们必须重新渲染把当前激活的物体置于上层画布
-    // this.renderAll();
+    this.root.renderAll();
 
     // if (corner === 'mtr') {
     //     // 如果点击的是上方的控制点，也就是旋转操作
@@ -316,6 +314,151 @@ class CanvasHandler extends BaseHandler {
 
           this.root.renderAll();
       }
+  }
+
+  /** 主要就是清空拖蓝选区，设置物体激活状态，重新渲染画布 */
+  __onMouseUp(e) {
+    let target;
+    if (this._currentTransform) {
+        let transform = this._currentTransform;
+
+        target = transform.target;
+        if (target._scaling) {
+            target._scaling = false;
+        }
+
+        // 每次物体更改都要重新计算新的控制点
+        const shapes = this.root.getAllShapes()
+        let i = shapes.length;
+        while (i--) {
+          shapes[i].setCoords();
+        }
+
+        target.isMoving = false;
+    }
+
+    this._currentTransform = null;
+
+    if (this._groupSelector) {
+        // 如果有拖蓝框选区域
+        this._findSelectedObjects(e);
+    }
+    // clear selection
+    this.root.renderAll();
+
+    this._setCursorFromEvent(e, target);
+  }
+
+  /** 记录当前物体的变换状态 */
+  _setupCurrentTransform(e, target) {
+    let action = 'drag',
+        corner,
+        pointer = Util.getPointer(e, this.getCanvasEle());
+
+    corner = target._findTargetCorner(e, this._offset);
+    if (corner) {
+        // 根据点击的控制点判断此次操作是什么
+        action = corner === 'ml' || corner === 'mr' ? 'scaleX' : corner === 'mt' || corner === 'mb' ? 'scaleY' : corner === 'mtr' ? 'rotate' : 'scale';
+    }
+
+    let originX = 'center',
+        originY = 'center';
+
+    if (corner === 'ml' || corner === 'tl' || corner === 'bl') {
+        // 如果点击的是左边的控制点，则变换基点就是右边，以右边为基准向左变换
+        originX = 'right';
+    } else if (corner === 'mr' || corner === 'tr' || corner === 'br') {
+        originX = 'left';
+    }
+
+    if (corner === 'tl' || corner === 'mt' || corner === 'tr') {
+        // 如果点击的是上方的控制点，则变换基点就是底部，以底边为基准向上变换
+        originY = 'bottom';
+    } else if (corner === 'bl' || corner === 'mb' || corner === 'br') {
+        originY = 'top';
+    }
+
+    if (corner === 'mtr') {
+        // 如果是旋转操作，则基点就是中心点
+        originX = 'center';
+        originY = 'center';
+    }
+
+    debugger
+
+    // let center = target.getCenterPoint();
+    this._currentTransform = {
+        target,
+        action,
+        scaleX: target.scaleX,
+        scaleY: target.scaleY,
+        offsetX: pointer.x - target.left,
+        offsetY: pointer.y - target.top,
+        originX,
+        originY,
+        ex: pointer.x,
+        ey: pointer.y,
+        left: target.left,
+        top: target.top,
+        theta: Util.degreesToRadians(target.angle),
+        width: target.width * target.scaleX,
+        mouseXSign: 1,
+        mouseYSign: 1,
+    };
+    // 记录物体原始的 original 变换参数
+    this._currentTransform.original = {
+        left: target.left,
+        top: target.top,
+        scaleX: target.scaleX,
+        scaleY: target.scaleY,
+        originX,
+        originY,
+    };
+    let { target: target2, ...other } = this._currentTransform;
+    console.log(JSON.stringify(other, null, 4));
+
+      // this._resetCurrentTransform(e); // 好像没必要重新赋值？除非按下了 altKey 键
+  }
+
+  /** 平移当前选中物体，注意这里我们没有用 += */
+  _translateObject(x, y) {
+    // console.log(this._currentTransform.offsetX, this._currentTransform.offsetY, this._offset.top, this._offset.left);
+    let target = this._currentTransform.target;
+    target.set('left', x - this._currentTransform.offsetX);
+    target.set('top', y - this._currentTransform.offsetY);
+  }
+
+  /** 重置当前 transform 状态为 original，并设置 resizing 的基点 */
+  _resetCurrentTransform(e) {
+    let t = this._currentTransform;
+
+    t.target.set('scaleX', t.original.scaleX);
+    t.target.set('scaleY', t.original.scaleY);
+    t.target.set('left', t.original.left);
+    t.target.set('top', t.original.top);
+
+    if (e.altKey) {
+        if (t.originX !== 'center') {
+            if (t.originX === 'right') {
+                t.mouseXSign = -1;
+            } else {
+                t.mouseXSign = 1;
+            }
+        }
+        if (t.originY !== 'center') {
+            if (t.originY === 'bottom') {
+                t.mouseYSign = -1;
+            } else {
+                t.mouseYSign = 1;
+            }
+        }
+
+        t.originX = 'center';
+        t.originY = 'center';
+    } else {
+        t.originX = t.original.originX;
+        t.originY = t.original.originY;
+    }
   }
 
   /** 使所有元素失活，并触发相应事件 */
