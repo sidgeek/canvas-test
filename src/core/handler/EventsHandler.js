@@ -168,6 +168,8 @@ class EventsHandler extends BaseHandler {
     } else {
       Shape.cleanLastSelectedShapes()
     }
+
+    this.root.canvasHandler.__onMouseDown(event)
   }
 
   handleMouseUp(event) {

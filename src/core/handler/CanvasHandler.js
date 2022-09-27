@@ -1,3 +1,4 @@
+import { MOUSE_CLICK } from "../types/const";
 import { cursorMap } from "../utils/cursorHelper";
 import { Util } from "../utils/Util";
 import BaseHandler from "./BaseHandler";
@@ -12,6 +13,11 @@ class CanvasHandler extends BaseHandler {
     this.defaultCursor = 'default'
     this.moveCursor = 'move'
     this.rotationCursor = 'crosshair'
+
+    this.stateful = false
+
+    /** 当前激活物体 */
+    this._activeObject = null
   }
 
   initialize() {
@@ -87,6 +93,7 @@ class CanvasHandler extends BaseHandler {
     const shapes = this.root.getAllShapes()
     for (let i = shapes.length; i--; ) {
         if (shapes[i] && this.containsPoint(e, shapes[i])) {
+          console.log('>>>> isIn');
             target = shapes[i];
             break;
         }
@@ -95,7 +102,10 @@ class CanvasHandler extends BaseHandler {
     if (target) return target;
   }
 
-  _shouldClearSelection() { return false }
+  _shouldClearSelection(e) { 
+    let target = this.findTarget(e)
+    return !target
+  }
 
   __onMouseUp(e) {
     var target;
@@ -149,7 +159,7 @@ class CanvasHandler extends BaseHandler {
 
     // clear selection
     this._groupSelector = null;
-    this.renderAll();
+    this.root.renderAll();
 
     this._setCursorFromEvent(e, target);
 
@@ -182,42 +192,59 @@ class CanvasHandler extends BaseHandler {
     target && target.fire('mouseup', { e });
   }
 
+  _shouldHandleGroupLogic() { return false }
+
+  setActiveObject(object, e) {
+    if (this._activeObject) {
+        // 如果当前有激活物体
+        this._activeObject.setActive(false);
+    }
+    this._activeObject = object;
+    object.setActive(true);
+
+    this.root.renderAll();
+    return this;
+}
+
   __onMouseDown(e) {
     let pointer;
     // 只处理左键点击
-    let isLeftClick = 'which' in e ? e.which === 1 : e.button === 1;
+    let isLeftClick = e.button === MOUSE_CLICK.LEFT;
+    
     if (!isLeftClick) return;
     // ignore if some object is being transformed at this moment
     if (this._currentTransform) return;
 
     let target = this.findTarget(e),
-        corner;
-    pointer = this.getPointer(e);
+      corner;
+      pointer = this.getPointer(e);
 
     if (this._shouldClearSelection(e)) {
-        this._groupSelector = {
-            ex: pointer.x,
-            ey: pointer.y,
-            top: 0,
-            left: 0,
-        };
-        // this.deactivateAllWithDispatch();
+        // this._groupSelector = {
+        //     ex: pointer.x,
+        //     ey: pointer.y,
+        //     top: 0,
+        //     left: 0,
+        // };
+        this.deactivateAllWithDispatch();
+        this.root.renderAll();
     } else {
         // 如果是拖拽或旋转
-        // this.stateful && target.saveState();
+        this.stateful && target.saveState();
 
-        // if ((corner = target._findTargetCorner(e, this._offset))) {
-        //     this.onBeforeScaleRotate(target);
-        // }
-        // if (this._shouldHandleGroupLogic(e, target)) {
-        //     this._handleGroupLogic(e, target);
-        //     target = this.getActiveGroup();
-        // } else {
-        //     if (target !== this.getActiveGroup()) {
-        //         this.deactivateAll();
-        //     }
-        //     this.setActiveObject(target, e);
-        // }
+        if ((corner = target._findTargetCorner(e, this._offset))) {
+          console.log('>>> on corner', corner);
+            // this.onBeforeScaleRotate(target);
+        }
+        if (this._shouldHandleGroupLogic(e, target)) {
+            // this._handleGroupLogic(e, target);
+            target = this.getActiveGroup();
+        } else {
+            // if (target !== this.getActiveGroup()) {
+            //     this.deactivateAll();
+            // }
+            this.setActiveObject(target, e);
+        }
 
         // this._setupCurrentTransform(e, target);
     }
@@ -243,8 +270,6 @@ class CanvasHandler extends BaseHandler {
           // 如果是 hover 事件，这里我们只需要改变鼠标样式，并不会重新渲染
           let style = this.getCanvasEle().style;
           target = this.findTarget(e);
-          // console.log('>>> target', target);
-
           if (target) {
               this._setCursorFromEvent(e, target);
           } else {
@@ -252,7 +277,7 @@ class CanvasHandler extends BaseHandler {
           }
       } else {
           // 如果是旋转、缩放、平移等操作
-          pointer = Util.getPointer(e, this.upperCanvasEl);
+          pointer = Util.getPointer(e, this.getCanvasEle());
 
           let x = pointer.x,
               y = pointer.y;
@@ -291,6 +316,25 @@ class CanvasHandler extends BaseHandler {
 
           this.root.renderAll();
       }
+  }
+
+  /** 使所有元素失活，并触发相应事件 */
+  deactivateAllWithDispatch() {
+    this.deactivateAll();
+    return this;
+  }
+
+  /** 将所有物体设置成未激活态 */
+  deactivateAll() {
+    let allObjects = this.root.getAllShapes(),
+        i = 0,
+        len = allObjects.length;
+    for (; i < len; i++) {
+        allObjects[i].setActive(false);
+    }
+    // this.discardActiveGroup();
+    // this.discardActiveObject();
+    return this;
   }
 
     /** 设置鼠标样式 */

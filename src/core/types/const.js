@@ -37,3 +37,10 @@ export const CURSOR = {
   S: 's-resize', // Bottom ()
   W: 'w-resize', // Left(West)
 }
+
+
+export const MOUSE_CLICK = {
+  LEFT: 0,
+  RIGHT: 2,
+  MID: 1
+}

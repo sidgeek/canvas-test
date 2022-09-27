@@ -21,7 +21,12 @@ export class Shape {
     this.height = height
     this.angle = 0
 
+    /** 是否处于激活态，也就是是否被选中 */
+    this.active = false;
+
     // 控制点
+    /** 是否有控制点 */
+    this.hasControls = true;
     this.oCoords = []
     this.cornerSize = 10
 
@@ -185,7 +190,7 @@ export class Shape {
   }
 
   drawControls(ctx) {
-    // if (!this.hasControls) return;
+    if (!this.hasControls || !this.active) return;
     var size = this.cornerSize,
         size2 = size / 2,
         strokeWidth2 = this.strokeWidth / 2,
@@ -660,11 +665,16 @@ export class Shape {
     };
   }
 
+  setActive(active = false) {
+    this.active = !!active;
+    return this;
+  }
+
   /** 检测哪个控制点被点击了 */
   _findTargetCorner(e, offset) {
     if (!this.hasControls || !this.active) return false;
 
-    let pointer = Util.getPointer(e, this.canvas.upperCanvasEl),
+    let pointer = Util.getPointer(e, this.root.canvasHandler.getCanvasEle()),
       ex = pointer.x - offset.left,
       ey = pointer.y - offset.top,
       xpoints,
@@ -755,6 +765,10 @@ export class Shape {
     return xcount;
   }
 
+  saveState() {
+    // do some
+    return this
+  }
 
   get center() {
     return { x: this.x + this.width / 2, y: this.y + this.height / 2 };
