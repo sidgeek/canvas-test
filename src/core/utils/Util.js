@@ -25,15 +25,16 @@ export class Util {
      * @returns
      */
     static rotatePoint(point, origin, radians) {
+        debugger
         const sin = Math.sin(radians),
             cos = Math.cos(radians);
 
-        point.subtractEquals(origin);
+        point.sub(origin);
 
         const rx = point.x * cos - point.y * sin;
         const ry = point.x * sin + point.y * cos;
 
-        return new Point(rx, ry).addEquals(origin);
+        return new Point(rx, ry).add(origin);
     }
     static pointerX(event) {
         // event.offsetX
@@ -48,7 +49,6 @@ export class Util {
     }
     /** 获取鼠标的点击坐标，相对于页面左上角，注意不是画布的左上角，到时候会减掉 offset */
     static getPointer(event, upperCanvasEl) {
-        debugger
         event || (event = window.event);
 
         let element = event.target,

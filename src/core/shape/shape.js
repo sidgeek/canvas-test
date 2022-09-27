@@ -288,6 +288,15 @@ export class Shape {
     return this;
   }
 
+  /** 获取当前大小，包含缩放效果 */
+  getWidth() {
+    return this.width * this.scaleX;
+  }
+  /** 获取当前大小，包含缩放效果 */
+  getHeight() {
+    return this.height * this.scaleY;
+  }
+
   getStartPoint() {
     return {
       x: this.x,
@@ -668,6 +677,69 @@ export class Shape {
   setActive(active = false) {
     this.active = !!active;
     return this;
+  }
+
+  setPositionByOrigin(pos, originX, originY) {
+    let center = this.translateToCenterPoint(pos, originX, originY);
+    let position = this.translateToOriginPoint(center, this.originX, this.originY);
+    // console.log(`更新缩放的物体位置:[${position.x}，${position.y}]`);
+    this.set('left', position.x);
+    this.set('top', position.y);
+  }
+
+  /**
+   * 平移坐标系到中心点
+   * @param center
+   * @param {string} originX  left | center | right
+   * @param {string} originY  top | center | bottom
+   * @returns
+   */
+  translateToOriginPoint(center, originX, originY) {
+    let x = center.x,
+        y = center.y;
+
+    // Get the point coordinates
+    if (originX === 'left') {
+        x = center.x - this.getWidth() / 2;
+    } else if (originX === 'right') {
+        x = center.x + this.getWidth() / 2;
+    }
+    if (originY === 'top') {
+        y = center.y - this.getHeight() / 2;
+    } else if (originY === 'bottom') {
+        y = center.y + this.getHeight() / 2;
+    }
+
+    // Apply the rotation to the point (it's already scaled properly)
+    return Util.rotatePoint(new Point(x, y), center, Util.degreesToRadians(this.angle));
+  }
+  /** 转换成本地坐标 */
+  toLocalPoint(point, originX, originY) {
+      let center = this.getCenterPoint();
+
+      let x, y;
+      if (originX !== undefined && originY !== undefined) {
+          if (originX === 'left') {
+              x = center.x - this.getWidth() / 2;
+          } else if (originX === 'right') {
+              x = center.x + this.getWidth() / 2;
+          } else {
+              x = center.x;
+          }
+
+          if (originY === 'top') {
+              y = center.y - this.getHeight() / 2;
+          } else if (originY === 'bottom') {
+              y = center.y + this.getHeight() / 2;
+          } else {
+              y = center.y;
+          }
+      } else {
+          x = this.left;
+          y = this.top;
+      }
+
+      return Util.rotatePoint(new Point(point.x, point.y), center, -Util.degreesToRadians(this.angle)).sub(new Point(x, y));
   }
 
   /** 检测哪个控制点被点击了 */

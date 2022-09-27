@@ -1,3 +1,4 @@
+import { Point } from "../point2d";
 import { MOUSE_CLICK } from "../types/const";
 import { cursorMap } from "../utils/cursorHelper";
 import { Util } from "../utils/Util";
@@ -384,8 +385,6 @@ class CanvasHandler extends BaseHandler {
         originY = 'center';
     }
 
-    debugger
-
     // let center = target.getCenterPoint();
     this._currentTransform = {
         target,
@@ -427,6 +426,85 @@ class CanvasHandler extends BaseHandler {
     target.set('left', x - this._currentTransform.offsetX);
     target.set('top', y - this._currentTransform.offsetY);
   }
+
+      /**
+     * 缩放当前选中物体
+     * @param x 鼠标点 x
+     * @param y 鼠标点 y
+     * @param by 是否等比缩放，x | y | equally
+     */
+    _scaleObject(x, y, by = 'equally') {
+        let t = this._currentTransform,
+            offset = this._offset,
+            target = t.target;
+
+        // 缩放基点：比如拖拽右边中间的控制点，其实我们参考的变换基点是左边中间的控制点
+        let constraintPosition = target.translateToOriginPoint(target.getCenterPoint(), t.originX, t.originY);
+        // 以物体变换中心为原点的鼠标点坐标值
+        let localMouse = target.toLocalPoint(new Point(x - offset.left, y - offset.top), t.originX, t.originY);
+
+        if (t.originX === 'right') {
+            localMouse.x *= -1;
+        } else if (t.originX === 'center') {
+            localMouse.x *= t.mouseXSign * 2;
+
+            if (localMouse.x < 0) {
+                t.mouseXSign = -t.mouseXSign;
+            }
+        }
+
+        if (t.originY === 'bottom') {
+            localMouse.y *= -1;
+        } else if (t.originY === 'center') {
+            localMouse.y *= t.mouseYSign * 2;
+
+            if (localMouse.y < 0) {
+                t.mouseYSign = -t.mouseYSign;
+            }
+        }
+
+        // 计算新的缩放值，以变换中心为原点，根据本地鼠标坐标点/原始宽度进行计算，重新设定物体缩放值
+        let newScaleX = target.scaleX,
+            newScaleY = target.scaleY;
+        if (by === 'equally') {
+            let dist = localMouse.y + localMouse.x;
+            let lastDist = target.height * t.original.scaleY + target.width * t.original.scaleX + target.padding * 2 - target.strokeWidth * 2 + 1; /* additional offset needed probably due to subpixel rendering, and avoids jerk when scaling an object */
+
+            // We use t.scaleX/Y instead of target.scaleX/Y because the object may have a min scale and we'll loose the proportions
+            newScaleX = (t.original.scaleX * dist) / lastDist;
+            newScaleY = (t.original.scaleY * dist) / lastDist;
+
+            target.set('scaleX', newScaleX);
+            target.set('scaleY', newScaleY);
+        } else if (!by) {
+            newScaleX = localMouse.x / (target.width + target.padding);
+            newScaleY = localMouse.y / (target.height + target.padding);
+
+            target.set('scaleX', newScaleX);
+            target.set('scaleY', newScaleY);
+        } else if (by === 'x') {
+            newScaleX = localMouse.x / (target.width + target.padding);
+            target.set('scaleX', newScaleX);
+        } else if (by === 'y') {
+            newScaleY = localMouse.y / (target.height + target.padding);
+            target.set('scaleY', newScaleY);
+        }
+        // 如果是反向拉伸 x
+        if (newScaleX < 0) {
+            if (t.originX === 'left') t.originX = 'right';
+            else if (t.originX === 'right') t.originX = 'left';
+        }
+        // 如果是反向拉伸 y
+        if (newScaleY < 0) {
+            if (t.originY === 'top') t.originY = 'bottom';
+            else if (t.originY === 'bottom') t.originY = 'top';
+        }
+
+        // console.log(constraintPosition, localMouse, t.originX, t.originY);
+
+        // 缩放会改变物体位置，所以要重新设置
+        target.setPositionByOrigin(constraintPosition, t.originX, t.originY);
+    }
 
   /** 重置当前 transform 状态为 original，并设置 resizing 的基点 */
   _resetCurrentTransform(e) {
