@@ -1,13 +1,9 @@
-import { EVENT, SHAPE_POS } from "../types/const";
-import { DD } from "./DragAndDrop";
+import { EVENT } from "../types/const";
 import { Point } from "../point2d";
-import { Shape } from "../shape/shape";
 import { getTransformedPoint } from "../utils/transform";
 import BaseHandler from "./BaseHandler";
-import { getShapePosCursor } from "../utils/cursorHelper";
 
 let currentTransformedCursor
-let isDragging = false
 const mousePos = document.getElementById('mouse-pos');
 const transformedMousePos = document.getElementById('transformed-mouse-pos');
 
@@ -33,26 +29,6 @@ class EventsHandler extends BaseHandler {
     return event
   }
 
-  getMatchedShapes(event, isGetMulti) {
-    const ctx = this.canvas.getCtx()
-    const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
-    const shapes = this.root.getAllShapes() 
-
-    let matchedShapes = []
-    for(let i = 0; i < shapes.length; i++) {
-      let shape = shapes[i]
-      const { isIn } = shape.isPointInClosedRegion(canvasPos)
-      if (!isIn) { continue }
-
-      if (!isGetMulti) {
-        return [shape]
-      }
-      
-      matchedShapes.push(shape)
-    }
-
-    return matchedShapes
-  }
 
   getMatchedShape(event) {
     const mShapes = this.getMatchedShapes(event, false)
@@ -61,47 +37,9 @@ class EventsHandler extends BaseHandler {
 
   handleEvent = (name) => (event) => {
     event = this.getNewEvent(event)
-    const ctx = this.canvas.getCtx()
-    const canvasPos = getTransformedPoint(ctx, event.point.x, event.point.y)
-
-    const shapes = this.root.getAllShapes() 
-    if (shapes.length === 0) return
 
     this.preHandleEvent(name, event)
-
-    shapes.forEach(s => s.updateIsHovering(false))
-
-    let hoverId = null
-    let curShapePos = SHAPE_POS.Null
-    const { type } = event
-    
-    for(let i = 0; i < shapes.length; i++) {
-      let shape = shapes[i]
-      const {isIn, shapePos} = shape.isPointInClosedRegion(canvasPos)
-      if (!isIn) { continue }
-
-      if (type === EVENT.MouseMove) { 
-        hoverId = shape.updateIsHovering(true)
-        curShapePos = shapePos
-        break 
-      } else if (type === EVENT.Mousedown) {
-        if (!DD._dragElements.has(shape._id)) {
-          DD._createDragElement(canvasPos, shape);
-        }
-        break 
-      }
-    }
-
-    const isHoverChange = Shape.checkIsHoverIdUpdate(hoverId)
-    const isShapePosChange = Shape.checkIsShapePosUpdate(curShapePos)
-
     this.afterHandleEvent(name, event)
-
-    if (isHoverChange || isShapePosChange) {
-      const cursor = getShapePosCursor(curShapePos)
-      this.root.canvasHandler.updateCursor(cursor)
-      this.root.renderAll()
-    }
   }
 
   preHandleEvent = (name, event) => {
@@ -129,73 +67,24 @@ class EventsHandler extends BaseHandler {
 
 
   afterHandleEvent = (name, event) => {
-    if (!DD.isDragging) return
-    const node = DD.node
-    const dragPosType = Shape.ShapeMouseDownPos
-
-    switch (name) {
-      case EVENT.MouseMove: {
-        // this.handleMouseMove(event)
-        if (dragPosType.startsWith('edge')) {
-        }
-        break
-      }
-
-      case EVENT.Mousedown: {
-        if (dragPosType.startsWith('edge')) {
-        }
-        break
-      }
-
-      case EVENT.Mouseup: {
-        if (dragPosType.startsWith('edge')) {
-        }
-        break
-      }
-
-      default: {
-      }
-    }
   }
 
 
   handleMouseDown(event) {
-    isDragging = true;
-    this.root.setPointerPosition(event.point)
-
-    const matchedShape = this.getMatchedShape(event)
-    if (matchedShape) {
-    } else {
-      Shape.cleanLastSelectedShapes()
-    }
-
     this.root.canvasHandler.__onMouseDown(event)
   }
 
   handleMouseUp(event) {
-    const matchedShape = this.getMatchedShape(event)
-    if (matchedShape) {
-    }
-
-    isDragging = false
-    this.root.setPointerPosition(null)
-
     this.root.canvasHandler.__onMouseUp(event)
   }
 
   handleMouseMove(event) {
-    this.root.setPointerPosition(event.point)
     const ctx = this.canvas.getCtx()
     currentTransformedCursor = getTransformedPoint(ctx, event.offsetX, event.offsetY);
     mousePos.innerText = `Original X: ${event.offsetX}, Y: ${event.offsetY}`;
     transformedMousePos.innerText = `Transformed X: ${currentTransformedCursor.x}, Y: ${currentTransformedCursor.y}`;
 
     this.root.canvasHandler.__onMouseMove(event)
-
-    if (DD.isDragging) {
-      event.preventDefault();
-    } else if (isDragging){
-    }
   }
 
   handleWheel = (evt) => {

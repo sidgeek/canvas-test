@@ -21,17 +21,15 @@ export class Shape {
     this.height = height
     this.angle = 0
 
-    /** 是否处于激活态，也就是是否被选中 */
-    this.active = false;
-
     // 控制点
     /** 是否有控制点 */
     this.hasControls = true;
     this.oCoords = []
     this.cornerSize = 10
 
+    /** 是否处于激活态，也就是是否被选中 */
+    this.active = false;
     this.isHovering = false
-    this.isSelected = false
     this.listenerMap = new Map()
 
     this.padding = 0
@@ -46,40 +44,8 @@ export class Shape {
   static ControlPadding = 4
   static ControlColor = 'red'
 
-  static LastHoverId = null
-  static LastSelectedShapes = []
-
-  static ShapeHoverPos = SHAPE_POS.Null
-  static ShapeMouseDownPos = SHAPE_POS.Null
-
   static getId() {
     return Shape.id++
-  }
-
-  static checkIsHoverIdUpdate(currentId) {
-    const isChange = (Shape.LastHoverId !== currentId)
-    Shape.LastHoverId = currentId
-    return isChange
-  }
-
-  static checkIsShapePosUpdate(currentShapePos) {
-    const isChange = (Shape.ShapeHoverPos !== currentShapePos)
-    Shape.ShapeHoverPos = currentShapePos
-    return isChange
-  }
-
-  static cleanLastSelectedShapes() {
-    Shape.LastSelectedShapes.map(s => s.updateIsSelected(false))
-    Shape.LastSelectedShapes = []
-  }
-
-  static addLastSelectedShapes(shape) {
-    Shape.cleanLastSelectedShapes()
-    Shape.LastSelectedShapes.push(shape)
-  }
-
-  static getLastSelectedShapes(shape) {
-    return Shape.LastSelectedShapes
   }
 
   /** 获取物体中心点 */
@@ -132,32 +98,16 @@ export class Shape {
     // 绘制物体
     this._render(ctx)
 
-    if (this.isHovering && this.isSelected) {
+    if (this.isHovering && this.active) {
       this.drawBoard(ctx)
       this.drawControls(ctx)
-    } else if (this.isSelected) {
-      this.drawControls()
+    } else if (this.active) {
+      this.drawControls(ctx)
     } else if (this.isHovering) {
       this.drawBoard(ctx)
     }
     this.drawControls(ctx)
     ctx.restore();
-  }
-
-  scaleByTopLeft() {
-    const ctx = this.ctx
-    ctx.translate(this.topLeft.x, this.topLeft.y)
-    ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-this.topLeft.x, -this.topLeft.y)
-  }
-
-  scaleByPoint() {
-    const ctx = this.ctx
-    const trX = this.x
-    const trY = this.y
-    ctx.translate(trX, trY)
-    ctx.scale(this.scaleX, this.scaleY);
-    ctx.translate(-trX, -trY)
   }
 
   drawBoard(ctx) {
@@ -170,23 +120,6 @@ export class Shape {
     const b_2 = b * 2
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
     ctx.restore()
-  }
-
-  getControlPoints(scale = 1) {
-    const { x, y, width: w, height: h } = this
-    const width = w * scale
-    const height = h * scale
-    const r = 10
-    const hr = r / 2
-
-    const points = [
-      { x: x - hr, y: y - hr },
-      { x: x + width - hr, y: y - hr },
-      { x: x + width - hr, y: y + height - hr },
-      { x: x - hr, y: y + height - hr }
-    ]
-
-    return { points, r }
   }
 
   drawControls(ctx) {
@@ -304,69 +237,6 @@ export class Shape {
     }
   }
 
-  updateX(v) {
-    this.x = v
-  }
-
-  updateY(v) {
-    this.y = v
-  }
-
-  updateXY(v1, v2) {
-    this.x = v1
-    this.y = v2
-  }
-
-  updateIsHovering(status) {
-    this.isHovering = status
-    return this._id
-  }
-
-  updateScale(ratio) {
-    console.log('>>> this.scaleX', this.scaleX);
-  }
-
-  updateIsSelected(status) {
-    this.isSelected = status
-  }
-
-  getShapePosByControlId(id) {
-    switch (id) {
-      case 1: return SHAPE_POS.ETL
-      case 2: return SHAPE_POS.ETR
-      case 3: return SHAPE_POS.EBR
-      case 4: return SHAPE_POS.EBL
-      default: return SHAPE_POS.Null
-    }
-  }
-
-  isPointInControlPoint(point) {
-    const { r, points } = this.getControlPoints(this.scaleX)
-    // 是否在控制点上
-    for (let i = 0; i < points.length; i++) {
-      const p = points[i]
-      if (Math.abs(point.x - p.x) <= r && Math.abs(point.y - p.y) <= r) {
-        const pos = this.getShapePosByControlId(i + 1)
-        return { shapePos: pos }
-      }
-    }
-
-    // 是否在边上
-    let pos = SHAPE_POS.Null
-    const hr = r / 2
-    if (mathHelper.getPointToLineDis(points[0], points[1], point) < hr) {
-      pos = SHAPE_POS.ET
-    } else if (mathHelper.getPointToLineDis(points[1], points[2], point) < hr) {
-      pos = SHAPE_POS.ER
-    } else if (mathHelper.getPointToLineDis(points[2], points[3], point) < hr) {
-      pos = SHAPE_POS.EB
-    } else if (mathHelper.getPointToLineDis(points[3], points[0], point) < hr) {
-      pos = SHAPE_POS.EL
-    }
-
-    return { shapePos: pos }
-  }
-
   on(eventName, listener) {
     if (this.listenerMap.has(eventName)) {
       this.listenerMap.get(eventName).push(listener)
@@ -383,42 +253,6 @@ export class Shape {
         events.splice(id, 1)
       }
     }
-  }
-
-  setAbsolutePosition(pos) {
-    this.x = pos.x
-    this.y = pos.y
-
-    return this
-  }
-
-  _setDragPosition(elem) {
-    // 当前鼠标对应的canvas坐标
-    const canvasPos = this.root.getPointerCanvasPosition()
-    const shapePos = Shape.ShapeMouseDownPos
-
-    if (!canvasPos || (shapePos !== SHAPE_POS.Body)) return
-
-    const moveX = canvasPos.x - elem.offset.x
-    const moveY = canvasPos.y - elem.offset.y
-
-    var newNodePos = { x: moveX, y: moveY }
-
-    if (
-      !this._lastPos ||
-      this._lastPos.x !== newNodePos.x ||
-      this._lastPos.y !== newNodePos.y
-    ) {
-      this.setAbsolutePosition(newNodePos);
-      this.root.renderAll()
-    }
-
-    this._lastPos = newNodePos;
-  }
-
-
-  getMouse(evt) {
-    return new Point(evt.offsetX, evt.offsetY)
   }
 
   addRoot(root) {
@@ -855,13 +689,5 @@ export class Shape {
     }
     this[key] = value;
     return this;
-  }
-
-  get center() {
-    return { x: this.x + this.width / 2, y: this.y + this.height / 2 };
-  }
-
-  get topLeft() {
-    return { x: this.x, y: this.y };
   }
 }

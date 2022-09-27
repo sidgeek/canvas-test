@@ -12,49 +12,14 @@ class Handlers {
     };
 
     this.allShapes = [];
-    this.pointerPos = null;
-    this.changedPointerPos = null;
-
     this.canvasHandler = new CanvasHandler(handlerOptions);
     this.eventsHandler = new EventsHandler(handlerOptions);
-  }
-
-  setPointerPosition(point) {
-    this.pointerPos = point;
-    this.changedPointerPos = point;
-  }
-
-  getPointerPosition() {
-    return this.changedPointerPos;
-  }
-
-  getPointerCanvasPosition() {
-    const pos = this.getPointerPosition()
-    return getTransformedPoint(this.canvasHandler.getCtx(), pos.x, pos.y)
   }
 
   add(shape) {
     shape.addRoot(this);
     shape.setCoords()
     this.allShapes.push(shape);
-    this.renderAll();
-  }
-
-  scale(shape, ratio) {
-    shape.updateScale(ratio);
-    this.renderAll();
-  }
-
-  scaleByShapePos(shape, posType, pointPos, ratio) {
-    if (posType === SHAPE_POS.ETL) { // 更新x, y
-      shape.updateXY(pointPos.x, pointPos.y)
-    } else if (posType === SHAPE_POS.ETR) { // 更新y
-      shape.updateY(pointPos.y)
-    } else if (posType === SHAPE_POS.EBL) { // 更新x
-      shape.updateX(pointPos.x)
-    } else if (posType === SHAPE_POS.EBR) { // 不需要更新
-    }
-    shape.updateScale(ratio);
     this.renderAll();
   }
 
