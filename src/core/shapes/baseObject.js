@@ -89,6 +89,8 @@ export class BaseObject {
   render(ctx, noTransform) {
     ctx.save()
 
+    const a = ctx.getTransform().a
+
     if (!noTransform) {
       this.transform(ctx);
     }
@@ -98,13 +100,13 @@ export class BaseObject {
 
     if (this.isHovering && this.active) {
       this.drawBoard(ctx)
-      this.drawControls(ctx)
+      this.drawControls(ctx, a)
     } else if (this.active) {
-      this.drawControls(ctx)
+      this.drawControls(ctx, a)
     } else if (this.isHovering) {
       this.drawBoard(ctx)
     }
-    this.drawControls(ctx)
+    this.drawControls(ctx, a)
     ctx.restore();
   }
 
@@ -120,8 +122,12 @@ export class BaseObject {
     ctx.restore()
   }
 
-  drawControls(ctx) {
+  drawControls(ctx, sc) {
     if (!this.hasControls || !this.active) return;
+    const { scaleX: sX, scaleY: sY } = this
+    
+    const scaleX = sX * sc
+    const scaleY = sY * sc
     var size = this.cornerSize,
         size2 = size / 2,
         strokeWidth2 = this.strokeWidth / 2,
@@ -129,21 +135,21 @@ export class BaseObject {
         top = -(this.height / 2),
         _left,
         _top,
-        sizeX = size / this.scaleX,
-        sizeY = size / this.scaleY,
-        paddingX = this.padding / this.scaleX,
-        paddingY = this.padding / this.scaleY,
-        scaleOffsetY = size2 / this.scaleY,
-        scaleOffsetX = size2 / this.scaleX,
-        scaleOffsetSizeX = (size2 - size) / this.scaleX,
-        scaleOffsetSizeY = (size2 - size) / this.scaleY,
+        sizeX = size / scaleX,
+        sizeY = size / scaleY,
+        paddingX = this.padding / scaleX,
+        paddingY = this.padding / scaleY,
+        scaleOffsetY = size2 / scaleY,
+        scaleOffsetX = size2 / scaleX,
+        scaleOffsetSizeX = (size2 - size) / scaleX,
+        scaleOffsetSizeY = (size2 - size) / scaleY,
         height = this.height,
         width = this.width,
         methodName = this.transparentCorners ? 'strokeRect' : 'fillRect';
 
     ctx.save();
 
-    ctx.lineWidth = 1 / Math.max(this.scaleX, this.scaleY);
+    ctx.lineWidth = 1 / Math.max(scaleX, scaleY);
 
     ctx.globalAlpha = this.isMoving ? this.borderOpacityWhenMoving : 1;
     ctx.strokeStyle = ctx.fillStyle = this.cornerColor;
@@ -578,7 +584,7 @@ export class BaseObject {
   _findTargetCorner(e, offset) {
     if (!this.hasControls || !this.active) return false;
 
-    let pointer = Util.getPointer(e, this.root.canvasHandler.getCanvasEle()),
+    let pointer = this.root.canvasHandler.getPointer(e),
       ex = pointer.x - offset.left,
       ey = pointer.y - offset.top,
       xpoints,

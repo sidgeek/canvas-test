@@ -2,13 +2,13 @@ import { Point } from "../point";
 import { cursorMap, MOUSE_CLICK } from "../types/const";
 import { Util } from "../helpers/Util";
 import BaseHandler from "./BaseHandler";
+import { getTransformedPoint } from "../helpers/transform";
 
 class CanvasHandler extends BaseHandler {
   constructor(props) {
     super(props)
     this.initialize()
 
-    this._offset = { left: 0, top: 0 }
     this.hoverCursor = 'move';
     this.defaultCursor = 'default'
     this.moveCursor = 'move'
@@ -16,6 +16,10 @@ class CanvasHandler extends BaseHandler {
 
     this.stateful = false
 
+    /** 整个画布到上面和左边的偏移量 */
+    this._offset = { left: 0, top: 0 }
+    /** 当前物体的变换信息，src 目录下中有截图 */
+    this._currentTransform = null
     /** 当前激活物体 */
     this._activeObject = null
   }
@@ -58,10 +62,14 @@ class CanvasHandler extends BaseHandler {
   }
   getPointer(e) {
     let pointer = Util.getPointer(e, this.getCanvasEle());
-    return {
+    const rp = {
         x: pointer.x - this._offset.left,
         y: pointer.y - this._offset.top,
     };
+
+    const ctx = this.getCtx()
+    let trPoint = getTransformedPoint(ctx, rp.x, rp.y)
+    return trPoint
   }
 
   containsPoint(e, target) {
@@ -190,7 +198,7 @@ class CanvasHandler extends BaseHandler {
           }
       } else {
           // 如果是旋转、缩放、平移等操作
-          pointer = Util.getPointer(e, this.getCanvasEle());
+          pointer = this.getPointer(e);
 
           let x = pointer.x,
               y = pointer.y;
@@ -268,7 +276,7 @@ class CanvasHandler extends BaseHandler {
   _setupCurrentTransform(e, target) {
     let action = 'drag',
         corner,
-        pointer = Util.getPointer(e, this.getCanvasEle());
+        pointer = this.getPointer(e);
 
     corner = target._findTargetCorner(e, this._offset);
     if (corner) {

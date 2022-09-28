@@ -25,15 +25,13 @@ class EventsHandler extends BaseHandler {
   getNewEvent(event) {
     const point = new Point(event.offsetX, event.offsetY)
     event.point = point
-    event.isStopBubble = false
+
+    const ctx = this.canvas.getCtx()
+    currentTransformedCursor = getTransformedPoint(ctx, point.x, point.y);
+    event.trPoint = currentTransformedCursor
     return event
   }
 
-
-  getMatchedShape(event) {
-    const mShapes = this.getMatchedShapes(event, false)
-    return mShapes.length > 0 ? mShapes[0] : null
-  }
 
   handleEvent = (name) => (event) => {
     event = this.getNewEvent(event)
@@ -79,11 +77,9 @@ class EventsHandler extends BaseHandler {
   }
 
   handleMouseMove(event) {
-    const ctx = this.canvas.getCtx()
-    currentTransformedCursor = getTransformedPoint(ctx, event.offsetX, event.offsetY);
-    mousePos.innerText = `Original X: ${event.offsetX}, Y: ${event.offsetY}`;
-    transformedMousePos.innerText = `Transformed X: ${currentTransformedCursor.x}, Y: ${currentTransformedCursor.y}`;
-
+    const { point, trPoint } = event
+    mousePos.innerText = `Original X: ${point.x}, Y: ${point.y}`;
+    transformedMousePos.innerText = `Transformed X: ${trPoint.x}, Y: ${trPoint.y}`;
     this.root.canvasHandler.__onMouseMove(event)
   }
 
@@ -98,33 +94,33 @@ class EventsHandler extends BaseHandler {
 
 
   handlePan = event => {
-    // const delta = event.deltaY
-    // const deltaX = event.deltaX
-    // const isShiftKey = event.shiftKey
-    // let pointX = 0
-    // let pointY = delta > 0 ? -30 : 30
+    const delta = event.deltaY
+    const deltaX = event.deltaX
+    const isShiftKey = event.shiftKey
+    let pointX = 0
+    let pointY = delta > 0 ? -30 : 30
 
-    // if (isShiftKey) {
-    //   pointY = 0
-    //   pointX = deltaX > 0 ? -30 : 30
-    // }
+    if (isShiftKey) {
+      pointY = 0
+      pointX = deltaX > 0 ? -30 : 30
+    }
 
-    // const context = this.canvas.getCtx()
-    // context.translate(pointX, pointY);
-    // this.root.renderAll()
+    const context = this.canvas.getCtx()
+    context.translate(pointX, pointY);
+    this.root.renderAll()
   }
 
   handleZoom = evt => {
-    // const zoom = evt.deltaY < 0 ? 1.1 : 0.9;
-    // const context = this.canvas.getCtx()
+    const zoom = evt.deltaY < 0 ? 1.1 : 0.9;
+    const context = this.canvas.getCtx()
 
-    // context.translate(currentTransformedCursor.x, currentTransformedCursor.y);
-    // context.scale(zoom, zoom);
-    // context.translate(-currentTransformedCursor.x, -currentTransformedCursor.y);
+    context.translate(currentTransformedCursor.x, currentTransformedCursor.y);
+    context.scale(zoom, zoom);
+    context.translate(-currentTransformedCursor.x, -currentTransformedCursor.y);
     
-    // this.root.renderAll()
-    // evt.preventDefault()
-    // evt.stopPropagation()
+    this.root.renderAll()
+    evt.preventDefault()
+    evt.stopPropagation()
   }
 }
 

@@ -35,6 +35,7 @@ export class Util {
 
         return new Point(rx, ry).add(origin);
     }
+    // 
     static pointerX(event) {
         // event.offsetX
         return event.offsetX || 0;
