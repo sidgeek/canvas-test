@@ -1,7 +1,6 @@
-import { Point } from '../point2d';
+import { Point } from '../point';
 
 const PiBy180 = Math.PI / 180; // 写在这里相当于缓存，因为会频繁调用
-const iMatrix = [1, 0, 0, 1, 0, 0];
 export class Util {
     static transformPoint(p, t, ignoreOffset) {
         if (ignoreOffset) {

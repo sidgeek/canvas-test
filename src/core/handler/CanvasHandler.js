@@ -1,7 +1,6 @@
-import { Point } from "../point2d";
-import { MOUSE_CLICK } from "../types/const";
-import { cursorMap } from "../utils/cursorHelper";
-import { Util } from "../utils/Util";
+import { Point } from "../point";
+import { cursorMap, MOUSE_CLICK } from "../types/const";
+import { Util } from "../helpers/Util";
 import BaseHandler from "./BaseHandler";
 
 class CanvasHandler extends BaseHandler {
@@ -107,91 +106,6 @@ class CanvasHandler extends BaseHandler {
     return !target
   }
 
-  __onMouseUp(e) {
-    var target;
-
-    // if (this.isDrawingMode && this._isCurrentlyDrawing) {
-    //   this.freeDrawing._finalizeAndAddPath();
-    //   this.fire('mouse:up', { e: e });
-    //   return;
-    // }
-
-    if (this._currentTransform) {
-        var transform = this._currentTransform;
-
-        target = transform.target;
-        if (target._scaling) {
-            target._scaling = false;
-        }
-
-        // determine the new coords everytime the image changes its position
-        var i = this._objects.length;
-        while (i--) {
-            this._objects[i].setCoords();
-        }
-
-        target.isMoving = false;
-
-        // only fire :modified event if target coordinates were changed during mousedown-mouseup
-        if (this.stateful && target.hasStateChanged()) {
-            this.fire('object:modified', { target: target });
-            target.fire('modified');
-        }
-
-        if (this._previousOriginX) {
-            this._currentTransform.target.adjustPosition(this._previousOriginX);
-            this._previousOriginX = null;
-        }
-    }
-
-    this._currentTransform = null;
-
-    if (this._groupSelector) {
-        // group selection was completed, determine its bounds
-        this._findSelectedObjects(e);
-    }
-    var activeGroup = this.getActiveGroup();
-    if (activeGroup) {
-        activeGroup.setObjectsCoords();
-        activeGroup.set('isMoving', false);
-        this._setCursor(this.defaultCursor);
-    }
-
-    // clear selection
-    this._groupSelector = null;
-    this.root.renderAll();
-
-    this._setCursorFromEvent(e, target);
-
-    // fix for FF
-    this._setCursor('');
-
-    var _this = this;
-    setTimeout(function () {
-        _this._setCursorFromEvent(e, target);
-    }, 50);
-
-    if (target) {
-        const { top, left, currentWidth, currentHeight, width, height, angle, scaleX, scaleY, originX, originY } = target;
-        const obj = {
-            top,
-            left,
-            currentWidth,
-            currentHeight,
-            width,
-            height,
-            angle,
-            scaleX,
-            scaleY,
-            originX,
-            originY,
-        };
-        console.log(JSON.stringify(obj, null, 4));
-    }
-    this.fire('mouse:up', { target, e });
-    target && target.fire('mouseup', { e });
-  }
-
   _shouldHandleGroupLogic() { return false }
 
   setActiveObject(object, e) {
@@ -232,7 +146,7 @@ class CanvasHandler extends BaseHandler {
         this.stateful && target.saveState();
 
         if ((corner = target._findTargetCorner(e, this._offset))) {
-          console.log('>>> on corner', corner);
+          console.log('>>> on corner', corner, pointer);
             // this.onBeforeScaleRotate(target);
         }
         if (this._shouldHandleGroupLogic(e, target)) {
@@ -566,28 +480,27 @@ class CanvasHandler extends BaseHandler {
 
   /** 根据鼠标位置来设置相应的鼠标样式 */
   _setCursorFromEvent(e, target) {
-      let s = this.getCanvasEle().style;
-      if (target) {
-          let corner =  target._findTargetCorner(e, this._offset);
+    let s = this.getCanvasEle().style;
+    if (target) {
+        let corner =  target._findTargetCorner(e, this._offset);
 
-          if (corner) {
-              corner = corner;
-              if (corner in cursorMap) {
-                  s.cursor = cursorMap[corner];
-              } else if (corner === 'mtr' && target.hasRotatingPoint) {
-                  s.cursor = this.rotationCursor;
-              } else {
-                  s.cursor = this.defaultCursor;
-                  return false;
-              }
-          } else {
-              s.cursor = this.hoverCursor;
-          }
-          return true;
-      } else {
-          s.cursor = this.defaultCursor;
-          return false;
-      }
+        if (corner) {
+            if (corner in cursorMap) {
+                s.cursor = cursorMap[corner];
+            } else if (corner === 'mtr' && target.hasRotatingPoint) {
+                s.cursor = this.rotationCursor;
+            } else {
+                s.cursor = this.defaultCursor;
+                return false;
+            }
+        } else {
+            s.cursor = this.hoverCursor;
+        }
+        return true;
+    } else {
+        s.cursor = this.defaultCursor;
+        return false;
+    }
   }
 }
 

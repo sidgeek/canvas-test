@@ -1,4 +1,4 @@
-import { Point } from "./point2d"
+import { Point } from "./point"
 
 export class Canvas {
   constructor() {

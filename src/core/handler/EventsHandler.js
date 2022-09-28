@@ -1,6 +1,6 @@
 import { EVENT } from "../types/const";
-import { Point } from "../point2d";
-import { getTransformedPoint } from "../utils/transform";
+import { Point } from "../point";
+import { getTransformedPoint } from "../helpers/transform";
 import BaseHandler from "./BaseHandler";
 
 let currentTransformedCursor

@@ -1,4 +1,4 @@
-import { Point } from "../point2d";
+import { Point } from "../point";
 
 export function getTransformedPoint(context, x, y) {
   const transform = context.getTransform();

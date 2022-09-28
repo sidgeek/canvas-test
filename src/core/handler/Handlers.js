@@ -1,5 +1,3 @@
-import { SHAPE_POS } from "../types/const";
-import { getTransformedPoint } from "../utils/transform";
 import CanvasHandler from "./CanvasHandler";
 import EventsHandler from "./EventsHandler";
 

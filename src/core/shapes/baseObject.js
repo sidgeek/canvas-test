@@ -1,13 +1,11 @@
-import { Point } from "../point2d"
-import { SHAPE_POS } from '../types/const'
-import mathHelper from "../utils/mathHelper"
-import { Util } from "../utils/Util"
+import { Point } from "../point"
+import { Util } from "../helpers/Util"
 
 // 图形的基类
-export class Shape {
+export class BaseObject {
   constructor(props) {
     const { canvas, left, top, width, height } = props
-    this._id = Shape.getId()
+    this._id = BaseObject.getId()
     this.ctx = canvas.ctx
     this.left = left
     this.top = top
@@ -45,7 +43,7 @@ export class Shape {
   static ControlColor = 'red'
 
   static getId() {
-    return Shape.id++
+    return BaseObject.id++
   }
 
   /** 获取物体中心点 */
@@ -114,9 +112,9 @@ export class Shape {
     const { x, y, width, height } = this
     ctx.save()
     this.scaleByPoint()
-    ctx.strokeStyle = Shape.BorderColor
-    ctx.lineWidth = Shape.BorderWidth
-    const b = Shape.BorderPadding
+    ctx.strokeStyle = BaseObject.BorderColor
+    ctx.lineWidth = BaseObject.BorderWidth
+    const b = BaseObject.BorderPadding
     const b_2 = b * 2
     ctx.strokeRect(x - b, y - b, width + b_2, height + b_2)
     ctx.restore()

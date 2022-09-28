@@ -56,10 +56,6 @@ export class Point {
     return this
   }
 
-  equal(v) {
-    return this.x === v.x && this.y === v.y
-  }
-
   rotate(center, angle) {
     const c = Math.cos(angle),
       s = Math.sin(angle)

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
-import { Rect } from './core/shape/rect';
+import { Rect } from './core/shapes/rect';
 import Handlers from './core/handler'
 import { EditorContext } from "./core/context"
 

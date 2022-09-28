@@ -1,7 +1,5 @@
-import { SHAPE_POS } from "../types/const"
-import { Shape } from "./shape"
-
-export class Rect extends Shape {
+import { BaseObject } from "./baseObject"
+export class Rect extends BaseObject {
   constructor(props) {
     super(props)
     const { fillColor = 'black' } = props
@@ -15,12 +13,5 @@ export class Rect extends Shape {
     ctx.beginPath();
     ctx.fillStyle = fillColor
     ctx.fillRect(x, y, w, h)
-    // ctx.moveTo(x, y);
-    // ctx.lineTo(x + w, y);
-    // ctx.lineTo(x + w, y + h);
-    // ctx.lineTo(x, y + h);
-    // ctx.lineTo(x, y);
-    // ctx.closePath();
-    // ctx.fill();
   }
 }
