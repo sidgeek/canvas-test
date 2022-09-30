@@ -18,6 +18,10 @@ export class BaseObject {
     this.width = width
     this.height = height
     this.angle = 0
+    this.controlOffset = {
+      x: 0,
+      y: 0
+    }
 
     // 控制点
     /** 是否有控制点 */
@@ -131,8 +135,8 @@ export class BaseObject {
     var size = this.cornerSize,
         size2 = size / 2,
         strokeWidth2 = this.strokeWidth / 2,
-        left = -(this.width / 2),
-        top = -(this.height / 2),
+        left = -(this.width / 2) - this.controlOffset.x,
+        top = -(this.height / 2) - this.controlOffset.y,
         _left,
         _top,
         sizeX = size / scaleX,

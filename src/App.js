@@ -40,8 +40,8 @@ function App() {
       canvas: context.canvas,
       left: 300,
       top: 300,
-      innerRadius: 7,
-      outerRadius: 10,
+      innerRadius: 70,
+      outerRadius: 100,
       numPoints: 5,
       fillColor: 'black',
     })
@@ -50,15 +50,18 @@ function App() {
 
   const addPolygon = useCallback(() => {
     if (!context) return
-    rect = new Polygon({
+    const polygon = new Polygon({
       canvas: context.canvas,
-      left: 300,
-      top: 300,
-      sides: 4,
+      left: 100,
+      top: 100,
+      sides: 5,
       radius: 100,
       fillColor: 'black',
     })
-    context.handlers.add(rect)
+
+    console.log('>>> rect:', polygon.getSelfRect());
+    
+    context.handlers.add(polygon)
   }, [context])
 
   const switchModeRect = useCallback(() => {

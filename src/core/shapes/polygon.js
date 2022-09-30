@@ -6,6 +6,16 @@ export default class Polygon extends BaseObject {
     this.fillColor = fillColor
     this.sides = sides
     this.radius = radius
+    this.updateRect()
+  }
+  updateRect() {
+    const { width, height } = this.getSelfRect()
+    this.width = width
+    this.height = height
+    this.controlOffset = {
+        x: (this.radius * 2 - width) / 2,
+        y: (this.radius * 2 - height) / 2,
+    }
   }
   _render(ctx) {
     const points = this._getPoints();
@@ -33,5 +43,26 @@ export default class Polygon extends BaseObject {
       });
     }
     return points;
+  }
+
+  getSelfRect() {
+    const points = this._getPoints();
+
+    var minX = points[0].x;
+    var maxX = points[0].y;
+    var minY = points[0].x;
+    var maxY = points[0].y;
+    points.forEach((point) => {
+      minX = Math.min(minX, point.x);
+      maxX = Math.max(maxX, point.x);
+      minY = Math.min(minY, point.y);
+      maxY = Math.max(maxY, point.y);
+    });
+    return {
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY,
+    };
   }
 }

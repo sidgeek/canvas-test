@@ -4,7 +4,7 @@ import { Util } from "../helpers/Util";
 import BaseHandler from "./BaseHandler";
 import { getTransformedPoint } from "../helpers/transform";
 
-let isFreeDraw = true;
+let isFreeDraw = false;
 
 class CanvasHandler extends BaseHandler {
   constructor(props) {
@@ -108,6 +108,7 @@ class CanvasHandler extends BaseHandler {
     for (let i = shapes.length; i--; ) {
       if (shapes[i] && this.containsPoint(e, shapes[i])) {
         target = shapes[i];
+        console.log('>>> target', target);
         break;
       }
     }
