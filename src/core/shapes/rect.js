@@ -1,5 +1,5 @@
 import { BaseObject } from "./baseObject"
-export class Rect extends BaseObject {
+export default class Rect extends BaseObject {
   constructor(props) {
     super(props)
     const { fillColor = 'black' } = props

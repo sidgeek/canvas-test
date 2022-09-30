@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react'
 import './App.css';
 import { Canvas } from './core/canvas';
-import { Rect } from './core/shapes/rect';
+import { Rect, Star, Polygon } from './core/shapes';
 import Handlers from './core/handler'
 import { EditorContext } from "./core/context"
 
@@ -34,9 +34,41 @@ function App() {
     context.handlers.add(rect)
   }, [context])
 
+  const addStar = useCallback(() => {
+    if (!context) return
+    rect = new Star({
+      canvas: context.canvas,
+      left: 300,
+      top: 300,
+      innerRadius: 7,
+      outerRadius: 10,
+      numPoints: 5,
+      fillColor: 'black',
+    })
+    context.handlers.add(rect)
+  }, [context])
+
+  const addPolygon = useCallback(() => {
+    if (!context) return
+    rect = new Polygon({
+      canvas: context.canvas,
+      left: 300,
+      top: 300,
+      sides: 4,
+      radius: 100,
+      fillColor: 'black',
+    })
+    context.handlers.add(rect)
+  }, [context])
+
   const switchModeRect = useCallback(() => {
     if (!context) return
     context.seIsNormal()
+  }, [context])
+
+  const clear = useCallback(() => {
+    if (!context) return
+    context.handlers.canvasHandler.clean()
   }, [context])
 
   return (
@@ -44,7 +76,10 @@ function App() {
       <canvas id='canvas' />
       <div>
         <button onClick={addRect}>add Rect </button>
+        <button onClick={addStar}>add Star </button>
+        <button onClick={addPolygon}>add Polygon </button>
         <button onClick={switchModeRect}>Mode update</button>
+        <button onClick={clear}>clear</button>
         <div>Mode: {isNormal ? 'Normal' : 'Draw'} </div>
       </div>
     </div>
