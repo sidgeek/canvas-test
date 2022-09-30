@@ -9,6 +9,7 @@ let rect;
 
 function App() {
   const context = useContext(EditorContext)
+  const { isNormal } = context
 
   useEffect(() => {
     const canvas = new Canvas()
@@ -16,7 +17,6 @@ function App() {
 
     context.setHandlers(handlers)
     context.setCanvas(canvas)
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -34,11 +34,18 @@ function App() {
     context.handlers.add(rect)
   }, [context])
 
+  const switchModeRect = useCallback(() => {
+    if (!context) return
+    context.seIsNormal()
+  }, [context])
+
   return (
     <div className="App">
       <canvas id='canvas' />
       <div>
         <button onClick={addRect}>add Rect </button>
+        <button onClick={switchModeRect}>Mode update</button>
+        <div>Mode: {isNormal ? 'Normal' : 'Draw'} </div>
       </div>
     </div>
   );
